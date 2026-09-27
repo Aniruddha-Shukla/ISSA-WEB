@@ -21,6 +21,8 @@ export type FieldDef = {
   hint?: string;
   placeholder?: string;
   options?: { value: string; label: string }[];
+  /** Value saved when a number field is left empty (use for NOT NULL columns). */
+  emptyValue?: number;
   /** For slug fields: the field whose value generates the slug. */
   from?: string;
   wide?: boolean;
@@ -65,7 +67,7 @@ function fromForm(fields: FieldDef[], values: FormValues) {
         .split(",")
         .map((t) => t.trim())
         .filter(Boolean);
-    else if (f.type === "number") payload[f.name] = v === "" ? null : Number(v);
+    else if (f.type === "number") payload[f.name] = v === "" ? (f.emptyValue ?? null) : Number(v);
     else if (f.type === "datetime") payload[f.name] = localInputToIso(String(v));
     else if (f.type === "date") payload[f.name] = v ? String(v) : null;
     else payload[f.name] = typeof v === "string" && v.trim() === "" ? null : typeof v === "string" ? v.trim() : v;

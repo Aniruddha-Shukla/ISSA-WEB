@@ -53,10 +53,11 @@ git push -u origin main
    npx supabase db push                              # asks for the database password
    ```
 
-   (Alternative: open **SQL Editor**, paste `supabase/migrations/20260927090000_issa_schema.sql`, **Run**.)
+   (Alternative: open **SQL Editor**, then paste and **Run** each file in `supabase/migrations/`, oldest first:
+   `20260927090000_issa_schema.sql`, then `20260928090000_learning_resources.sql`.)
 
 4. Optional sample content: SQL Editor → paste `supabase/seed.sql` → Run. Skip this if you'll add real content from
-   the admin dashboard.
+   the admin dashboard. `supabase/learning-starter.sql` loads only the 12 real starter learning resources.
 5. **Project Settings → API Keys**: copy the **Project URL** and the **publishable** key. Never put the _secret_ /
    _service_role_ key in the app or in Vercel.
 

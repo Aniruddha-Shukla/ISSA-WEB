@@ -2,7 +2,7 @@ import "server-only";
 
 import content from "@/content/demo-content.json";
 import { zonedTimeToUtc } from "@/lib/utils";
-import type { Achievement, ClubEvent, GalleryItem, Project, Quiz, TeamMember } from "@/lib/types";
+import type { Achievement, ClubEvent, GalleryItem, LearningResource, Project, Quiz, TeamMember } from "@/lib/types";
 
 /**
  * Sample content for demo mode (no Supabase configured). The same JSON seeds
@@ -102,6 +102,15 @@ export function demoGallery(): GalleryItem[] {
     event_id: g.event_id,
     taken_on: daysAgoDate(g.taken_days_ago),
     sort_order: g.sort_order,
+    is_published: true,
+  }));
+}
+
+export function demoLearning(): LearningResource[] {
+  return content.learning.map((l) => ({
+    ...l,
+    kind: l.kind as LearningResource["kind"],
+    level: l.level as LearningResource["level"],
     is_published: true,
   }));
 }

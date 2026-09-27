@@ -10,7 +10,7 @@ export function GallerySection({ items }: { items: GalleryItem[] }) {
       <Container>
         <SectionHeading
           id="gallery-title"
-          kicker="06 — Gallery"
+          kicker="07 — Gallery"
           title="Moments from the lab"
           description="Photos and video recaps from Hack Nights, CTF finals, talks and hackathons."
           action={

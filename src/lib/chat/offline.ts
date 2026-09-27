@@ -2,7 +2,7 @@ import "server-only";
 
 import { contact, faqs, membership, rules } from "@/content/club";
 import type { QuizSummary } from "@/lib/data/public";
-import type { ClubEvent, TeamMember } from "@/lib/types";
+import type { ClubEvent, LearningResource, TeamMember } from "@/lib/types";
 import { formatEventWhen } from "@/lib/utils";
 
 /**
@@ -48,9 +48,37 @@ const tokens = (text: string) =>
     .split(/\s+/)
     .filter((t) => t.length > 1 && !STOP.has(t));
 
+const GENERIC_LEARNING_WORDS = new Set([
+  "learn",
+  "learning",
+  "start",
+  "started",
+  "starting",
+  "begin",
+  "resource",
+  "resources",
+  "course",
+  "courses",
+  "beginner",
+  "beginners",
+  "study",
+  "tutorial",
+  "tutorials",
+  "practice",
+  "get",
+  "best",
+  "good",
+  "want",
+  "should",
+  "where",
+]);
+
 const has = (q: string, ...words: string[]) => words.some((w) => q.includes(w));
 
-export function offlineAnswer(question: string, ctx: { upcoming: ClubEvent[]; quizzes: QuizSummary[]; team: TeamMember[] }) {
+export function offlineAnswer(
+  question: string,
+  ctx: { upcoming: ClubEvent[]; quizzes: QuizSummary[]; team: TeamMember[]; learning: LearningResource[] },
+) {
   const q = question.toLowerCase();
 
   if (/^(hi|hello|hey|yo|namaste)\b/.test(q.trim()) && q.length < 24) {
@@ -65,6 +93,44 @@ export function offlineAnswer(question: string, ctx: { upcoming: ClubEvent[]; qu
       live.length
         ? `\nOpen now: ${live.map((z) => `[${z.title}](/quizzes/${z.id})`).join(", ")}`
         : "\nSee all quizzes on the [Quizzes](/quizzes) page.",
+    ].join("\n");
+  }
+
+  if (
+    has(
+      q,
+      "learn",
+      "resource",
+      "roadmap",
+      "course",
+      "study",
+      "tutorial",
+      "get started",
+      "getting started",
+      "practice",
+      "beginner",
+    )
+  ) {
+    if (!ctx.learning.length)
+      return "The Learning hub is being stocked — check [Learn](/learn) soon, or ask a core team member for pointers.";
+    // Score on topic words only; generic words ("learn", "start") would match everything.
+    const words = tokens(question).filter((w) => !GENERIC_LEARNING_WORDS.has(w));
+    const levelRank = (r: LearningResource) => ["beginner", "intermediate", "advanced"].indexOf(r.level);
+    const scored = ctx.learning
+      .map((r) => {
+        const strong = [r.title, r.track, ...r.tags].join(" ").toLowerCase();
+        const weak = (r.description ?? "").toLowerCase();
+        return { r, score: words.reduce((sum, w) => sum + (strong.includes(w) ? 2 : weak.includes(w) ? 1 : 0), 0) };
+      })
+      .filter((x) => x.score > 0)
+      .sort((a, b) => b.score - a.score || levelRank(a.r) - levelRank(b.r))
+      .map((x) => x.r);
+    const featured = ctx.learning.filter((r) => r.is_featured);
+    const picks = (scored.length ? scored : featured.length ? featured : ctx.learning).slice(0, 4);
+    return [
+      "**Good places to start:**",
+      ...picks.map((r) => `- [${r.title}](${r.url}) — ${r.level}, ${r.track}${r.is_free ? " (free)" : ""}`),
+      "\nBrowse everything by track and level in the [Learning hub](/learn).",
     ].join("\n");
   }
 

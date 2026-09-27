@@ -76,7 +76,7 @@ export function HallOfFame({ achievements }: { achievements: Achievement[] }) {
       <Container>
         <SectionHeading
           id="hof-title"
-          kicker="05 — Hall of Fame"
+          kicker="06 — Hall of Fame"
           title={
             <>
               Wins, ranks &amp; <span className="text-gradient">firsts</span>

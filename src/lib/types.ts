@@ -104,6 +104,25 @@ export interface ClubEvent {
   created_at?: string;
 }
 
+export type LearningKind = "course" | "platform" | "video" | "article" | "tool" | "book" | "roadmap" | "notes";
+export type LearningLevel = "beginner" | "intermediate" | "advanced";
+
+export interface LearningResource {
+  id: string;
+  title: string;
+  description: string | null;
+  url: string;
+  track: string;
+  kind: LearningKind;
+  level: LearningLevel;
+  is_free: boolean;
+  source: string | null;
+  tags: string[];
+  sort_order: number;
+  is_featured: boolean;
+  is_published: boolean;
+}
+
 export interface GalleryItem {
   id: string;
   title: string;

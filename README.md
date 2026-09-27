@@ -18,6 +18,7 @@ Supabase (Postgres + Row Level Security, Auth, Realtime, Storage) · Google Gemi
 | **Check-in**         | Admin scanner page: USB/Bluetooth scanner or typed codes, in-browser camera scanning where supported, and phone-camera scanning (the QR opens the check-in page and checks the attendee in automatically). Flags duplicates and cancelled tickets.                                                                                           |
 | **Submissions**      | Per-event submission portal (title, team, repo, demo, optional file up to 10 MB in private storage), editable until the deadline; admins review with status, score and feedback.                                                                                                                                                             |
 | **Quizzes**          | **Live** (Kahoot-style, host-driven) and **self-paced** modes. Server-timed questions, speed-weighted auto-grading (50–100% of points for correct answers), answer keys that never reach the browser before the reveal, realtime leaderboards, projector view, host console with join QR, auto-reveal, podium, answer review after the quiz. |
+| **Learning hub**     | Curated courses, practice platforms, roadmaps and tools grouped by track and level, with search and filters; featured picks on the home page; the AI assistant recommends from it. Managed under **Admin → Site content → Learning hub**.                                                                                                    |
 | **Accounts & RBAC**  | Email/password + Google OAuth. Roles: **Admin** (core team), **Member**, **Guest**. College-domain emails can be auto-verified as members, or sign-ups restricted to them (enforced by a database trigger).                                                                                                                                  |
 | **Profiles**         | Name, roll no, branch, year, avatar, links; tickets, event history, quiz scores and ranks, submissions, badges (awarded automatically for check-ins, submissions, quiz podiums — or manually by admins).                                                                                                                                     |
 | **Admin dashboard**  | Analytics overview, events CRUD + attendee management, check-in, quiz builder (JSON import/export) + host console, member roles and badges, site content (team, projects, hall of fame, gallery), sign-up policy, exports.                                                                                                                   |
@@ -60,7 +61,7 @@ from scratch.
 ### Option B — hosted Supabase
 
 1. Create a project at [supabase.com](https://supabase.com).
-2. Apply the schema — either paste `supabase/migrations/20260927090000_issa_schema.sql` into **SQL Editor → Run**, or
+2. Apply the schema — either paste each file in `supabase/migrations/` (oldest first) into **SQL Editor → Run**, or
    `npx supabase link --project-ref <ref>` then `npx supabase db push`.
 3. Optional sample content: run `supabase/seed.sql` in the SQL editor (safe to run twice).
 4. **Authentication → URL Configuration**: Site URL = your site (e.g. `https://issa.example.edu`), and add redirect

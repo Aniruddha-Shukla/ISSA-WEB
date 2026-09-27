@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import type { Achievement, GalleryItem, Project, TeamMember } from "@/lib/types";
+import type { Achievement, GalleryItem, LearningResource, Project, TeamMember } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -26,7 +26,7 @@ const teamConfig: ResourceConfig<TeamMember> = {
     { name: "instagram_url", label: "Instagram URL", type: "url" },
     { name: "email", label: "Public email", type: "text" },
     { name: "tenure", label: "Tenure", type: "text", placeholder: "2026–27" },
-    { name: "sort_order", label: "Display order", type: "number", hint: "Lower numbers appear first." },
+    { name: "sort_order", label: "Display order", type: "number", emptyValue: 0, hint: "Lower numbers appear first." },
     { name: "is_published", label: "Show on website", type: "boolean" },
   ],
   columns: [
@@ -73,7 +73,7 @@ const projectConfig: ResourceConfig<Project> = {
     { name: "repo_url", label: "GitHub repository", type: "url" },
     { name: "demo_url", label: "Live demo", type: "url" },
     { name: "cover_url", label: "Cover image", type: "image" },
-    { name: "sort_order", label: "Display order", type: "number" },
+    { name: "sort_order", label: "Display order", type: "number", emptyValue: 0 },
     { name: "is_featured", label: "Featured", type: "boolean" },
     { name: "is_published", label: "Show on website", type: "boolean" },
   ],
@@ -168,7 +168,7 @@ const galleryConfig: ResourceConfig<GalleryItem> = {
     { name: "thumbnail_url", label: "Custom thumbnail", type: "image", hint: "Optional. YouTube thumbnails are automatic." },
     { name: "caption", label: "Caption", type: "text", wide: true },
     { name: "taken_on", label: "Date", type: "date" },
-    { name: "sort_order", label: "Display order", type: "number" },
+    { name: "sort_order", label: "Display order", type: "number", emptyValue: 0 },
     { name: "is_published", label: "Show on website", type: "boolean" },
   ],
   columns: [
@@ -186,7 +186,79 @@ const galleryConfig: ResourceConfig<GalleryItem> = {
   ],
 };
 
-type Tab = "team" | "projects" | "achievements" | "gallery";
+const learningConfig: ResourceConfig<LearningResource> = {
+  table: "learning_resources",
+  singular: "Resource",
+  order: [{ column: "track" }, { column: "sort_order" }, { column: "title" }],
+  search: (r) => `${r.title} ${r.track} ${r.source ?? ""} ${r.tags.join(" ")}`,
+  publishField: "is_published",
+  defaults: { track: "Getting Started", kind: "course", level: "beginner", is_free: true, is_published: true, sort_order: 10 },
+  fields: [
+    { name: "title", label: "Title", type: "text", required: true, wide: true },
+    { name: "url", label: "Link", type: "url", required: true, wide: true, placeholder: "https://…" },
+    {
+      name: "track",
+      label: "Track",
+      type: "text",
+      required: true,
+      hint: "Groups resources on the Learn page, e.g. Getting Started, Web Security, Linux & Networking, CTF Practice.",
+    },
+    { name: "source", label: "Source / author", type: "text", placeholder: "PortSwigger, ISSA Workshop…" },
+    {
+      name: "kind",
+      label: "Type",
+      type: "select",
+      required: true,
+      options: [
+        { value: "course", label: "Course" },
+        { value: "platform", label: "Practice platform / labs" },
+        { value: "video", label: "Video" },
+        { value: "article", label: "Article" },
+        { value: "tool", label: "Tool" },
+        { value: "book", label: "Book" },
+        { value: "roadmap", label: "Roadmap" },
+        { value: "notes", label: "Notes & docs (e.g. workshop slides)" },
+      ],
+    },
+    {
+      name: "level",
+      label: "Level",
+      type: "select",
+      required: true,
+      options: [
+        { value: "beginner", label: "Beginner" },
+        { value: "intermediate", label: "Intermediate" },
+        { value: "advanced", label: "Advanced" },
+      ],
+    },
+    { name: "description", label: "Why it's worth it", type: "textarea", hint: "One or two sentences." },
+    { name: "tags", label: "Tags", type: "tags", placeholder: "web, labs, ctf" },
+    { name: "sort_order", label: "Order within track", type: "number", emptyValue: 0, hint: "Lower numbers appear first." },
+    { name: "is_free", label: "Free to use", type: "boolean" },
+    { name: "is_featured", label: "Featured on the home page", type: "boolean" },
+    { name: "is_published", label: "Show on website", type: "boolean" },
+  ],
+  columns: [
+    {
+      header: "Resource",
+      cell: (r) => (
+        <div>
+          <p className="font-medium text-ink">{r.title}</p>
+          <p className="line-clamp-1 max-w-md text-xs text-faint">{r.source ?? r.url}</p>
+        </div>
+      ),
+    },
+    { header: "Track", cell: (r) => <span className="text-muted">{r.track}</span> },
+    {
+      header: "Level",
+      cell: (r) => (
+        <Badge tone={r.level === "beginner" ? "success" : r.level === "intermediate" ? "warning" : "danger"}>{r.level}</Badge>
+      ),
+    },
+  ],
+};
+
+type Tab = "team" | "projects" | "achievements" | "gallery" | "learning";
 
 export function ContentAdmin() {
   const [tab, setTab] = useState<Tab>("team");
@@ -203,6 +275,7 @@ export function ContentAdmin() {
           { id: "projects", label: "Projects" },
           { id: "achievements", label: "Hall of Fame" },
           { id: "gallery", label: "Gallery" },
+          { id: "learning", label: "Learning hub" },
         ]}
       />
       <div role="tabpanel" id={`content-panel-${tab}`} aria-labelledby={`content-tab-${tab}`}>
@@ -210,6 +283,7 @@ export function ContentAdmin() {
         {tab === "projects" ? <ResourceManager config={projectConfig} /> : null}
         {tab === "achievements" ? <ResourceManager config={achievementConfig} /> : null}
         {tab === "gallery" ? <ResourceManager config={galleryConfig} /> : null}
+        {tab === "learning" ? <ResourceManager config={learningConfig} /> : null}
       </div>
     </div>
   );

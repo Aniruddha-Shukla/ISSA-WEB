@@ -4,7 +4,7 @@ import { cache } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { getSupabasePublicClient } from "@/lib/supabase/server";
-import type { Achievement, ClubEvent, GalleryItem, Project, Quiz, TeamMember } from "@/lib/types";
+import type { Achievement, ClubEvent, GalleryItem, LearningResource, Project, Quiz, TeamMember } from "@/lib/types";
 import { hashString } from "@/lib/utils";
 import * as demo from "./demo";
 
@@ -117,6 +117,15 @@ export const getEventById = cache(async (id: string) => {
   );
   return events[0] ?? null;
 });
+
+export const getLearningResources = cache(() =>
+  load<LearningResource[]>(
+    "learning",
+    (sb) => sb.from("learning_resources").select("*").eq("is_published", true).order("track").order("sort_order").order("title"),
+    () => demo.demoLearning().sort((a, b) => a.track.localeCompare(b.track) || a.sort_order - b.sort_order),
+    [],
+  ),
+);
 
 export const getQuizCatalog = cache(() =>
   load<QuizSummary[]>(

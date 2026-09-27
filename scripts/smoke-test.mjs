@@ -110,6 +110,8 @@ try {
   check(events.data?.length >= 7 && events.data.every((e) => e.is_published), "anon sees published events");
   check(Array.isArray((await anon.rpc("quiz_catalog")).data), "quiz_catalog works for anon");
   check(typeof (await anon.rpc("public_stats")).data?.members === "number", "public_stats works for anon");
+  const learning = await anon.from("learning_resources").select("id, title").limit(5);
+  check(!learning.error, "anon can read the learning hub", learning.error?.message);
   expectError(await anon.rpc("register_for_event", { p_event_id: IDS.hackNight }), "permission denied", "anon cannot register");
 
   console.log("\n== registration & tickets");
@@ -354,6 +356,18 @@ try {
     newEvent.error?.message,
   );
   if (newEvent.data) await admin.from("events").delete().eq("id", newEvent.data.id);
+  const res = await admin
+    .from("learning_resources")
+    .insert({ title: `Smoke ${stamp}`, url: "https://example.com", description: null, sort_order: 0 })
+    .select("id")
+    .single();
+  check(!res.error, "admin adds a learning resource (optional description)", res.error?.message);
+  if (res.data) await admin.from("learning_resources").delete().eq("id", res.data.id);
+  expectError(
+    await player.from("learning_resources").insert({ title: "nope", url: "https://example.com" }),
+    "row-level security",
+    "members cannot add learning resources",
+  );
   const blocked = await player
     .from("events")
     .insert({ slug: `nope-${stamp}`, title: "x", summary: "x", starts_at: new Date().toISOString() });

@@ -19,6 +19,7 @@ const columns = [
     links: [
       { label: "Events", href: "/events" },
       { label: "Quizzes", href: "/quizzes" },
+      { label: "Learning hub", href: "/learn" },
       { label: "Gallery", href: "/gallery" },
       { label: "Join the club", href: "/signup" },
     ],

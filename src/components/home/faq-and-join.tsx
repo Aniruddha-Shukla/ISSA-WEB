@@ -10,7 +10,7 @@ export function FaqSection() {
         <div>
           <SectionHeading
             id="faq-title"
-            kicker="07 — FAQ"
+            kicker="08 — FAQ"
             title="Questions, answered"
             description="Can't find what you're looking for? Ask the ISSA assistant in the corner — it knows our rules, events and schedules."
           />
