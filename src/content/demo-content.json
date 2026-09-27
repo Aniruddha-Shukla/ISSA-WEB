@@ -1,0 +1,624 @@
+{
+  "$comment": "Sample content. Used as the seed for the database (npm run db:seed:generate -> supabase/seed.sql) and as the offline fallback when Supabase is not configured. Replace freely.",
+  "team": [
+    {
+      "id": "a0000000-0000-4000-8000-000000000001",
+      "name": "Aarav Mehta",
+      "designation": "President",
+      "bio": "Final-year CSE. Breaks web apps for fun, writes the fixes for work. Leads club strategy and partnerships.",
+      "linkedin_url": "https://www.linkedin.com/",
+      "github_url": "https://github.com/",
+      "instagram_url": "https://www.instagram.com/",
+      "email": null,
+      "tenure": "2026–27",
+      "sort_order": 1
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000002",
+      "name": "Diya Sharma",
+      "designation": "Vice President",
+      "bio": "Cloud security enthusiast and AWS community builder. Keeps every event on schedule.",
+      "linkedin_url": "https://www.linkedin.com/",
+      "github_url": "https://github.com/",
+      "twitter_url": "https://x.com/",
+      "tenure": "2026–27",
+      "sort_order": 2
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000003",
+      "name": "Rohan Iyer",
+      "designation": "Technical Lead",
+      "bio": "Full-stack developer and maintainer of the club's open-source projects, including this website.",
+      "linkedin_url": "https://www.linkedin.com/",
+      "github_url": "https://github.com/",
+      "tenure": "2026–27",
+      "sort_order": 3
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000004",
+      "name": "Kabir Singh",
+      "designation": "CTF & Research Lead",
+      "bio": "Reverse engineer and pwn player. Designs the challenges for ISSA CTF every year.",
+      "linkedin_url": "https://www.linkedin.com/",
+      "github_url": "https://github.com/",
+      "tenure": "2026–27",
+      "sort_order": 4
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000005",
+      "name": "Sneha Kulkarni",
+      "designation": "Events & Outreach Head",
+      "bio": "Runs workshops, speaker sessions and the campus cyber-awareness drive.",
+      "linkedin_url": "https://www.linkedin.com/",
+      "instagram_url": "https://www.instagram.com/",
+      "tenure": "2026–27",
+      "sort_order": 5
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000006",
+      "name": "Ananya Rao",
+      "designation": "Design & Media Lead",
+      "bio": "UI/UX designer behind the ISSA brand. Photographs every event you see in the gallery.",
+      "linkedin_url": "https://www.linkedin.com/",
+      "instagram_url": "https://www.instagram.com/",
+      "tenure": "2026–27",
+      "sort_order": 6
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000007",
+      "name": "Vikram Nair",
+      "designation": "AI Security Lead",
+      "bio": "Researches adversarial ML and LLM red-teaming. Mentors the PhishNet project.",
+      "linkedin_url": "https://www.linkedin.com/",
+      "github_url": "https://github.com/",
+      "tenure": "2026–27",
+      "sort_order": 7
+    },
+    {
+      "id": "a0000000-0000-4000-8000-000000000008",
+      "name": "Meera Joshi",
+      "designation": "Treasurer & Operations",
+      "bio": "Manages budgets, sponsorships and logistics so the tech team can focus on building.",
+      "linkedin_url": "https://www.linkedin.com/",
+      "tenure": "2026–27",
+      "sort_order": 8
+    }
+  ],
+  "projects": [
+    {
+      "id": "b0000000-0000-4000-8000-000000000001",
+      "title": "PhishNet",
+      "summary": "Browser extension that flags phishing pages in real time using a lightweight on-device ML model.",
+      "description": "PhishNet extracts 40+ URL and DOM features and scores pages with a quantised gradient-boosted model that runs entirely in the browser, so no browsing data leaves the device.",
+      "tags": ["AI/ML", "Security", "Browser"],
+      "status": "ongoing",
+      "repo_url": "https://github.com/",
+      "demo_url": null,
+      "contributors": ["Vikram Nair", "Aarav Mehta"],
+      "is_featured": true,
+      "sort_order": 1
+    },
+    {
+      "id": "b0000000-0000-4000-8000-000000000002",
+      "title": "ISSA CTF Platform",
+      "summary": "Self-hosted capture-the-flag platform with dynamic scoring, team play and 60+ original challenges.",
+      "description": "Containerised challenge infrastructure with per-team instances, automated flag rotation and a live scoreboard. Powers ISSA CTF every year.",
+      "tags": ["Security", "DevOps", "CTF"],
+      "status": "completed",
+      "repo_url": "https://github.com/",
+      "demo_url": null,
+      "contributors": ["Kabir Singh", "Rohan Iyer"],
+      "is_featured": true,
+      "sort_order": 2
+    },
+    {
+      "id": "b0000000-0000-4000-8000-000000000003",
+      "title": "Honeypot Lab",
+      "summary": "A network of low-interaction honeypots that logs real-world attacker behaviour for research.",
+      "description": "SSH, HTTP and SMB honeypots feed an ELK pipeline. Monthly reports summarise attack sources, credentials tried and malware samples collected.",
+      "tags": ["Security", "Networking", "Data"],
+      "status": "ongoing",
+      "repo_url": "https://github.com/",
+      "demo_url": null,
+      "contributors": ["Kabir Singh"],
+      "is_featured": false,
+      "sort_order": 3
+    },
+    {
+      "id": "b0000000-0000-4000-8000-000000000004",
+      "title": "ISSA Web Platform",
+      "summary": "This website: events, ticketing, live quizzes, submissions and an AI assistant, built on Next.js and Supabase.",
+      "description": "Role-based access control enforced in Postgres, realtime quiz hosting and CSV/JSON exports for the core team.",
+      "tags": ["Web", "Open Source"],
+      "status": "ongoing",
+      "repo_url": "https://github.com/",
+      "demo_url": "/",
+      "contributors": ["Rohan Iyer", "Ananya Rao"],
+      "is_featured": true,
+      "sort_order": 4
+    },
+    {
+      "id": "b0000000-0000-4000-8000-000000000005",
+      "title": "LogLens",
+      "summary": "SIEM-lite dashboard that parses auth logs and alerts on brute-force and impossible-travel logins.",
+      "description": "Streams syslog into DuckDB, runs detection rules written in SQL and pushes alerts to Discord.",
+      "tags": ["Security", "Data", "Web"],
+      "status": "completed",
+      "repo_url": "https://github.com/",
+      "demo_url": null,
+      "contributors": ["Diya Sharma", "Meera Joshi"],
+      "is_featured": false,
+      "sort_order": 5
+    },
+    {
+      "id": "b0000000-0000-4000-8000-000000000006",
+      "title": "SecureVault",
+      "summary": "Educational zero-knowledge password manager demonstrating client-side encryption done right.",
+      "description": "Argon2id key derivation, AES-GCM vault encryption and a threat model document written for first-year students.",
+      "tags": ["Cryptography", "Web"],
+      "status": "completed",
+      "repo_url": "https://github.com/",
+      "demo_url": null,
+      "contributors": ["Aarav Mehta"],
+      "is_featured": false,
+      "sort_order": 6
+    },
+    {
+      "id": "b0000000-0000-4000-8000-000000000007",
+      "title": "DeepCheck",
+      "summary": "Research prototype that detects AI-generated profile photos in campus social platforms.",
+      "description": "Fine-tuned vision transformer with frequency-domain features. Evaluated on a dataset collected with consent at ISSA events.",
+      "tags": ["AI/ML", "Research"],
+      "status": "ongoing",
+      "repo_url": "https://github.com/",
+      "demo_url": null,
+      "contributors": ["Vikram Nair", "Ananya Rao"],
+      "is_featured": false,
+      "sort_order": 7
+    }
+  ],
+  "achievements": [
+    {
+      "id": "c0000000-0000-4000-8000-000000000001",
+      "title": "National Hackathon — Grand Finale Winners",
+      "recipients": "Team Null Pointers · Rohan Iyer, Meera Joshi, Diya Sharma",
+      "category": "hackathon",
+      "position": "Winner",
+      "description": "Built a privacy-preserving attendance system using on-device face matching in 36 hours.",
+      "achieved_days_ago": 160,
+      "is_featured": true
+    },
+    {
+      "id": "c0000000-0000-4000-8000-000000000002",
+      "title": "Inter-college CTF Championship",
+      "recipients": "Team 0xISSA · Kabir Singh, Aarav Mehta, Vikram Nair",
+      "category": "ctf",
+      "position": "1st Place",
+      "description": "Solved 31 of 34 challenges across web, pwn, crypto and forensics.",
+      "achieved_days_ago": 95,
+      "is_featured": true
+    },
+    {
+      "id": "c0000000-0000-4000-8000-000000000003",
+      "title": "Security+ Study Group",
+      "recipients": "12 ISSA members",
+      "category": "certification",
+      "position": "Certified",
+      "description": "Members cleared CompTIA Security+ after the club's 10-week study programme.",
+      "achieved_days_ago": 60,
+      "is_featured": false
+    },
+    {
+      "id": "c0000000-0000-4000-8000-000000000004",
+      "title": "Best Paper Award — Student Research Symposium",
+      "recipients": "Vikram Nair, Ananya Rao",
+      "category": "publication",
+      "position": "Best Paper",
+      "description": "“Detecting synthetic profile images with frequency-domain cues” (DeepCheck).",
+      "achieved_days_ago": 40,
+      "is_featured": true
+    },
+    {
+      "id": "c0000000-0000-4000-8000-000000000005",
+      "title": "Open-source Summer Programme",
+      "recipients": "Rohan Iyer",
+      "category": "award",
+      "position": "Contributor",
+      "description": "Selected to contribute to a major web security scanner over the summer.",
+      "achieved_days_ago": 120,
+      "is_featured": false
+    },
+    {
+      "id": "c0000000-0000-4000-8000-000000000006",
+      "title": "University Cyber Challenge",
+      "recipients": "Team Stack Smashers · Kabir Singh, Sneha Kulkarni",
+      "category": "ctf",
+      "position": "Top 50",
+      "description": "Placed in the global top 50 among 900+ university teams.",
+      "achieved_days_ago": 210,
+      "is_featured": false
+    }
+  ],
+  "events": [
+    {
+      "id": "e0000000-0000-4000-8000-000000000001",
+      "slug": "hack-night-web-exploitation-101",
+      "title": "Hack Night: Web Exploitation 101",
+      "summary": "Hands-on intro to the OWASP Top 10. Break a deliberately vulnerable app, then patch it.",
+      "description": "Bring your laptop — we'll hack a deliberately vulnerable web app together.\n\n**You'll learn**\n- How SQL injection, XSS and CSRF actually work\n- Using Burp Suite to intercept and modify requests\n- Writing the fix, not just the exploit\n\n**Prerequisites:** a laptop with a modern browser. We'll share a lab VM on the day.\n\nAll hacking happens only on lab targets we own. Attacking systems without permission is illegal and against the ISSA code of conduct.",
+      "category": "workshop",
+      "location": "Lab 3, CSE Block",
+      "mode": "offline",
+      "starts_in_days": 5,
+      "start_time": "17:00",
+      "duration_hours": 3,
+      "capacity": 60,
+      "registration_open": true,
+      "members_only": false,
+      "submissions_open": false,
+      "tags": ["web", "owasp", "beginner-friendly"],
+      "is_featured": true
+    },
+    {
+      "id": "e0000000-0000-4000-8000-000000000002",
+      "slug": "cyber-quiz-night",
+      "title": "Cyber Quiz Night",
+      "summary": "A live, Kahoot-style quiz on security, networks and tech trivia. Fastest correct answers win.",
+      "description": "Play live from your phone while questions appear on the big screen.\n\n- 8 questions, 20 seconds each\n- Faster correct answers earn more points (up to 1,000 per question)\n- Top 3 win swag and a podium badge on their ISSA profile\n\nSign in before the quiz starts so you can join the lobby instantly.",
+      "category": "competition",
+      "location": "Seminar Hall 2",
+      "mode": "hybrid",
+      "starts_in_days": 8,
+      "start_time": "18:30",
+      "duration_hours": 1.5,
+      "capacity": 120,
+      "registration_open": true,
+      "members_only": false,
+      "submissions_open": false,
+      "tags": ["quiz", "fun"],
+      "is_featured": true
+    },
+    {
+      "id": "e0000000-0000-4000-8000-000000000003",
+      "slug": "buildsec-hackathon",
+      "title": "BuildSec Hackathon 2026",
+      "summary": "36 hours to build secure-by-design software for campus problems. Teams of up to four.",
+      "description": "Tracks: **Campus Safety**, **Privacy Tech** and **Open Innovation**.\n\n- Teams of 1–4; register individually and enter the same team name\n- Submit your repository, a short demo video link and a pitch deck before the deadline\n- Judging: impact (30%), security (30%), technical depth (25%), presentation (15%)\n\nMentors from the core team will be around all night. Food is on us.",
+      "category": "hackathon",
+      "location": "Innovation Centre",
+      "mode": "offline",
+      "starts_in_days": 20,
+      "start_time": "09:00",
+      "duration_hours": 36,
+      "capacity": 150,
+      "registration_open": true,
+      "members_only": false,
+      "submissions_open": true,
+      "submission_deadline_hours_after_start": 36,
+      "submission_guidelines": "Submit once per team (from any one member's account) with your team name. Include a public repository link and optionally a demo link. You may upload a single .zip, .pdf or .pptx up to 10 MB (link larger files from Drive or GitHub). You can update your submission until the deadline.",
+      "tags": ["hackathon", "teams", "prizes"],
+      "is_featured": true
+    },
+    {
+      "id": "e0000000-0000-4000-8000-000000000004",
+      "slug": "issa-ctf-2026",
+      "title": "ISSA CTF 2026",
+      "summary": "Our flagship 24-hour jeopardy-style capture-the-flag. Web, pwn, crypto, forensics and OSINT.",
+      "description": "Compete solo or in teams of up to three. Challenges range from beginner to brutal.\n\n**Members only** — sign up with your college email to be auto-verified as a member.\n\nFlag format: `issa{...}`. Sharing flags between teams leads to disqualification.",
+      "category": "ctf",
+      "location": "Online + CSE Block Labs",
+      "mode": "hybrid",
+      "starts_in_days": 34,
+      "start_time": "10:00",
+      "duration_hours": 24,
+      "capacity": 300,
+      "registration_open": true,
+      "members_only": true,
+      "submissions_open": false,
+      "tags": ["ctf", "competition"],
+      "is_featured": false
+    },
+    {
+      "id": "e0000000-0000-4000-8000-000000000005",
+      "slug": "orientation-2026",
+      "title": "Orientation 2026: Welcome to ISSA",
+      "summary": "Meet the core team, see what we build, and find your track: security, dev, AI or design.",
+      "description": "Our kick-off session for new members with live demos, a mini CTF and pizza.",
+      "category": "meetup",
+      "location": "Main Auditorium",
+      "mode": "offline",
+      "starts_in_days": -21,
+      "start_time": "16:00",
+      "duration_hours": 2,
+      "capacity": null,
+      "registration_open": false,
+      "members_only": false,
+      "submissions_open": false,
+      "tags": ["community"],
+      "is_featured": false
+    },
+    {
+      "id": "e0000000-0000-4000-8000-000000000006",
+      "slug": "guest-talk-zero-trust",
+      "title": "Guest Talk: Zero Trust in Practice",
+      "summary": "An industry security architect on moving from perimeter security to zero trust.",
+      "description": "Covered identity-aware proxies, device posture and micro-segmentation, with a Q&A on security careers.",
+      "category": "talk",
+      "location": "Seminar Hall 1",
+      "mode": "hybrid",
+      "starts_in_days": -48,
+      "start_time": "15:00",
+      "duration_hours": 1.5,
+      "capacity": 200,
+      "registration_open": false,
+      "members_only": false,
+      "submissions_open": false,
+      "tags": ["talk", "careers"],
+      "is_featured": false
+    },
+    {
+      "id": "e0000000-0000-4000-8000-000000000007",
+      "slug": "linux-networking-bootcamp",
+      "title": "Linux & Networking Bootcamp",
+      "summary": "Two-day bootcamp covering the shell, permissions, TCP/IP, Wireshark and firewall basics.",
+      "description": "The foundation for everything else we do. Slides and lab sheets are shared with attendees.",
+      "category": "workshop",
+      "location": "Lab 1, CSE Block",
+      "mode": "offline",
+      "starts_in_days": -75,
+      "start_time": "10:00",
+      "duration_hours": 6,
+      "capacity": 80,
+      "registration_open": false,
+      "members_only": false,
+      "submissions_open": false,
+      "tags": ["linux", "networking", "beginner-friendly"],
+      "is_featured": false
+    }
+  ],
+  "gallery": [
+    {
+      "id": "d0000000-0000-4000-8000-000000000001",
+      "title": "Orientation 2026",
+      "media_type": "image",
+      "url": null,
+      "caption": "A full auditorium for our 2026 kick-off.",
+      "event_id": "e0000000-0000-4000-8000-000000000005",
+      "taken_days_ago": 21,
+      "sort_order": 1
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000002",
+      "title": "Hack Night crowd",
+      "media_type": "image",
+      "url": null,
+      "caption": "Forty laptops, one vulnerable web app.",
+      "event_id": null,
+      "taken_days_ago": 30,
+      "sort_order": 2
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000003",
+      "title": "Watch: Cyber Security in 7 Minutes",
+      "media_type": "video",
+      "url": "https://www.youtube.com/watch?v=inWWhr5tnEA",
+      "caption": "The primer we screened at orientation (video by Simplilearn).",
+      "event_id": "e0000000-0000-4000-8000-000000000005",
+      "taken_days_ago": 21,
+      "sort_order": 3
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000004",
+      "title": "Zero Trust Q&A",
+      "media_type": "image",
+      "url": null,
+      "caption": "Career Q&A after the zero trust talk.",
+      "event_id": "e0000000-0000-4000-8000-000000000006",
+      "taken_days_ago": 48,
+      "sort_order": 4
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000005",
+      "title": "Bootcamp labs",
+      "media_type": "image",
+      "url": null,
+      "caption": "Packet captures and firewall rules on day two.",
+      "event_id": "e0000000-0000-4000-8000-000000000007",
+      "taken_days_ago": 74,
+      "sort_order": 5
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000006",
+      "title": "CTF finals scoreboard",
+      "media_type": "image",
+      "url": null,
+      "caption": "The final hour of the inter-college CTF.",
+      "event_id": null,
+      "taken_days_ago": 95,
+      "sort_order": 6
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000007",
+      "title": "Hackathon winners",
+      "media_type": "image",
+      "url": null,
+      "caption": "Team Null Pointers with the grand finale trophy.",
+      "event_id": null,
+      "taken_days_ago": 160,
+      "sort_order": 7
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000008",
+      "title": "Cyber awareness drive",
+      "media_type": "image",
+      "url": null,
+      "caption": "Teaching phishing spotting to 500+ students.",
+      "event_id": null,
+      "taken_days_ago": 110,
+      "sort_order": 8
+    },
+    {
+      "id": "d0000000-0000-4000-8000-000000000009",
+      "title": "Core team 2026–27",
+      "media_type": "image",
+      "url": null,
+      "caption": "The people behind ISSA this year.",
+      "event_id": null,
+      "taken_days_ago": 25,
+      "sort_order": 9
+    }
+  ],
+  "quizzes": [
+    {
+      "id": "f0000000-0000-4000-8000-000000000001",
+      "title": "Cyber Quiz Night — Live",
+      "description": "Hosted live at Cyber Quiz Night. Join the lobby and wait for the host to start.",
+      "event_id": "e0000000-0000-4000-8000-000000000002",
+      "mode": "live",
+      "status": "published",
+      "members_only": false,
+      "questions": [
+        {
+          "prompt": "Which TCP port does HTTPS use by default?",
+          "options": ["80", "443", "8080", "22"],
+          "correct_index": 1,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "HTTPS is HTTP over TLS, served on TCP port 443 by default."
+        },
+        {
+          "prompt": "Which attack tricks a logged-in user's browser into sending an unwanted request to a trusted site?",
+          "options": ["XSS", "CSRF", "SSRF", "Clickjacking"],
+          "correct_index": 1,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "Cross-Site Request Forgery rides on the victim's existing session. Anti-CSRF tokens and SameSite cookies defend against it."
+        },
+        {
+          "prompt": "Which of these is a hash function rather than an encryption algorithm?",
+          "options": ["AES", "RSA", "SHA-256", "ChaCha20"],
+          "correct_index": 2,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "SHA-256 is a one-way hash. AES and ChaCha20 are symmetric ciphers; RSA is asymmetric."
+        },
+        {
+          "prompt": "In the CIA triad, what does the “I” stand for?",
+          "options": ["Identity", "Integrity", "Isolation", "Inspection"],
+          "correct_index": 1,
+          "time_limit": 15,
+          "points": 1000,
+          "explanation": "Confidentiality, Integrity, Availability."
+        },
+        {
+          "prompt": "Which tool is best known for network port scanning?",
+          "options": ["Wireshark", "Nmap", "Burp Suite", "John the Ripper"],
+          "correct_index": 1,
+          "time_limit": 15,
+          "points": 1000,
+          "explanation": "Nmap discovers hosts and services. Wireshark captures packets, Burp proxies web traffic, John cracks passwords."
+        },
+        {
+          "prompt": "What does adding a unique salt to each password hash defend against?",
+          "options": ["Network sniffing", "Precomputed rainbow-table attacks", "Phishing", "Keyloggers"],
+          "correct_index": 1,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "Salts make precomputed tables useless and ensure identical passwords hash differently."
+        },
+        {
+          "prompt": "Which HTTP response header restricts where scripts can load from, helping mitigate XSS?",
+          "options": ["Content-Security-Policy", "X-Powered-By", "Accept-Encoding", "ETag"],
+          "correct_index": 0,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "A strict Content-Security-Policy blocks inline and untrusted scripts."
+        },
+        {
+          "prompt": "Which Linux command changes a file's permission bits?",
+          "options": ["chown", "chmod", "chgrp", "umask"],
+          "correct_index": 1,
+          "time_limit": 15,
+          "points": 1000,
+          "explanation": "chmod changes mode bits; chown changes ownership."
+        }
+      ]
+    },
+    {
+      "id": "f0000000-0000-4000-8000-000000000002",
+      "title": "Security Fundamentals — Practice",
+      "description": "A self-paced warm-up. Play any time this month; you'll see whether each answer was right straight away.",
+      "event_id": null,
+      "mode": "self_paced",
+      "status": "published",
+      "opens_in_days": -1,
+      "closes_in_days": 30,
+      "members_only": false,
+      "questions": [
+        {
+          "prompt": "Phishing emails most commonly try to…",
+          "options": [
+            "Steal credentials or deliver malware",
+            "Speed up your inbox",
+            "Update your operating system",
+            "Encrypt your files for safekeeping"
+          ],
+          "correct_index": 0,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "Phishing lures you into revealing credentials or running malware."
+        },
+        {
+          "prompt": "Which of these passwords is strongest?",
+          "options": ["P@ssw0rd", "correct-horse-battery-staple-42", "12345678", "qwerty!"],
+          "correct_index": 1,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "Length beats complexity: a long passphrase has far more entropy than a short “complex” password."
+        },
+        {
+          "prompt": "What does multi-factor authentication add to a login?",
+          "options": ["A second factor such as an OTP or security key", "A longer password", "A CAPTCHA", "A VPN connection"],
+          "correct_index": 0,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "MFA requires something you have or are in addition to something you know."
+        },
+        {
+          "prompt": "Which protocol should replace Telnet for remote administration?",
+          "options": ["FTP", "SSH", "SNMP", "HTTP"],
+          "correct_index": 1,
+          "time_limit": 15,
+          "points": 1000,
+          "explanation": "SSH encrypts the session; Telnet sends everything, including passwords, in plaintext."
+        },
+        {
+          "prompt": "A “zero-day” vulnerability is…",
+          "options": [
+            "A bug fixed on the day it was found",
+            "A flaw with no patch available because the vendor has had zero days to fix it",
+            "A virus that deletes itself after a day",
+            "An expired TLS certificate"
+          ],
+          "correct_index": 1,
+          "time_limit": 20,
+          "points": 1000,
+          "explanation": "Zero-days are exploited before a fix exists."
+        },
+        {
+          "prompt": "What is the primary job of a firewall?",
+          "options": [
+            "Filter network traffic based on rules",
+            "Speed up internet access",
+            "Store passwords securely",
+            "Scan email attachments"
+          ],
+          "correct_index": 0,
+          "time_limit": 15,
+          "points": 1000,
+          "explanation": "Firewalls allow or block traffic according to a rule set."
+        }
+      ]
+    }
+  ]
+}

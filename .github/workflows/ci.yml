@@ -1,0 +1,30 @@
+# Type-check, lint and build every push and pull request.
+# Free: unlimited minutes on public repos, 2,000 minutes/month on private ones
+# (this job takes ~2 minutes).
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - run: npm ci
+      - run: npm run typecheck
+      - run: npm run lint
+      - run: npm run format:check
+      # Builds in demo mode (no secrets needed) to catch compile and prerender errors.
+      - run: npm run build

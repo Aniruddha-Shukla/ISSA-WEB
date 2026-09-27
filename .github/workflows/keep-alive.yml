@@ -1,0 +1,39 @@
+# Supabase pauses free-tier projects after ~7 days without activity.
+# This makes one tiny read through the public API every 3 days so the club
+# site never goes to sleep between events. Costs nothing (a few seconds of
+# GitHub Actions time).
+#
+# Setup: repository Settings -> Secrets and variables -> Actions -> add
+#   SUPABASE_URL              e.g. https://abcd1234.supabase.co
+#   SUPABASE_PUBLISHABLE_KEY  the publishable (or legacy anon) key
+#
+# Note: GitHub disables scheduled workflows after 60 days without commits in
+# the repository. If that happens, re-enable it from the Actions tab.
+name: Keep Supabase awake
+
+on:
+  schedule:
+    - cron: "17 3 */3 * *"
+  workflow_dispatch:
+
+jobs:
+  ping:
+    runs-on: ubuntu-latest
+    timeout-minutes: 2
+    steps:
+      - name: Read public stats through the Supabase API
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_KEY: ${{ secrets.SUPABASE_PUBLISHABLE_KEY }}
+        run: |
+          if [ -z "$SUPABASE_URL" ] || [ -z "$SUPABASE_KEY" ]; then
+            echo "::error::Add the SUPABASE_URL and SUPABASE_PUBLISHABLE_KEY repository secrets."
+            exit 1
+          fi
+          curl --fail --silent --show-error --max-time 30 \
+            -X POST "$SUPABASE_URL/rest/v1/rpc/public_stats" \
+            -H "apikey: $SUPABASE_KEY" \
+            -H "Content-Type: application/json" \
+            -d '{}'
+          echo
+          echo "Supabase is awake."
