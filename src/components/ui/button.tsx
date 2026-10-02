@@ -4,14 +4,15 @@ import { LoaderCircle } from "lucide-react";
 import { cn } from "@/lib/utils";
 
 const base =
-  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-xl font-medium select-none transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50";
+  "inline-flex shrink-0 items-center justify-center gap-2 whitespace-nowrap rounded-full font-medium select-none transition-[background-color,border-color,color,box-shadow,transform] duration-150 active:translate-y-px disabled:pointer-events-none disabled:opacity-50 aria-disabled:pointer-events-none aria-disabled:opacity-50";
 
 const variants = {
   primary:
-    "bg-primary text-on-primary hover:bg-primary-600 shadow-[0_0_0_1px_rgb(46_242_177/0.25),0_10px_30px_-10px_rgb(46_242_177/0.55)]",
-  secondary: "border border-line-strong bg-surface-3 text-ink hover:border-primary/40 hover:bg-[#1c273a]",
+    "bg-primary text-on-primary font-semibold hover:bg-primary-600 shadow-[0_0_0_1px_rgb(34_211_238/0.25),0_10px_30px_-10px_rgb(34_211_238/0.55)]",
+  secondary: "border border-line-strong bg-surface-3 text-ink hover:border-primary/40 hover:bg-[#262634]",
   outline: "border border-line-strong bg-transparent text-ink hover:border-primary/50 hover:text-primary",
   ghost: "text-muted hover:bg-white/5 hover:text-ink",
+  neon: "btn-neon text-ink hover:text-white",
   danger: "border border-danger/35 bg-danger/10 text-danger hover:bg-danger/20",
 } as const;
 

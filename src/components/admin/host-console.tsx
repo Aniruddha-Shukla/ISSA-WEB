@@ -77,6 +77,9 @@ export function HostConsole({ quiz }: { quiz: Quiz }) {
       void refreshBoard();
     },
     pollMs: 2500,
+    // One host screen: poll answer counts and scores every 2s instead of receiving
+    // a push for every single answer.
+    attemptsPollMs: 2000,
   });
 
   const act = useCallback(
@@ -244,7 +247,7 @@ export function HostConsole({ quiz }: { quiz: Quiz }) {
                     value={joinUrl}
                     size={220}
                     bgColor="#ffffff"
-                    fgColor="#05070b"
+                    fgColor="#000000"
                     level="M"
                     title="Scan to join the quiz"
                   />

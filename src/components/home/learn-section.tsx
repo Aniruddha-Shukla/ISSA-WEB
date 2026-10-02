@@ -15,22 +15,22 @@ export function LearnSection({ resources }: { resources: LearningResource[] }) {
       <Container>
         <SectionHeading
           id="learn-title"
-          kicker="05 — Learn"
-          title="Start learning today"
+          kicker="05 · Start learning today"
+          title="Learn"
           description="Roadmaps, courses and practice platforms the core team actually used — from your first Linux command to your first CTF flag."
-          action={
-            <ButtonLink href="/learn" variant="outline">
-              Learning hub <ArrowRight className="size-4" aria-hidden />
-            </ButtonLink>
-          }
         />
         <ul className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
           {picks.map((r, i) => (
-            <Reveal as="li" key={r.id} delay={(i % 3) * 0.06}>
+            <Reveal as="li" key={r.id} delay={(i % 3) * 0.06} className="h-full">
               <ResourceCard resource={r} />
             </Reveal>
           ))}
         </ul>
+        <div className="mt-12 flex justify-center">
+          <ButtonLink href="/learn" variant="neon" className="px-6 font-display text-[0.7rem] tracking-[0.18em] uppercase">
+            Open the learning hub <ArrowRight className="size-4" aria-hidden />
+          </ButtonLink>
+        </div>
       </Container>
     </section>
   );

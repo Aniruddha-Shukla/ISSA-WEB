@@ -3,8 +3,31 @@ import type { ClubEvent } from "@/lib/types";
 import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/feedback";
 import { Container, SectionHeading } from "@/components/ui/section-heading";
-import { EventTimeline } from "@/components/events/event-timeline";
+import { EventPoster } from "@/components/events/event-poster";
 import { EventsTabs } from "@/components/events/events-tabs";
+import { PosterRail } from "@/components/events/poster-rail";
+
+function Posters({
+  events,
+  seats,
+  past,
+  label,
+}: {
+  events: ClubEvent[];
+  seats: Record<string, number>;
+  past?: boolean;
+  label: string;
+}) {
+  return (
+    <PosterRail label={label}>
+      {events.map((event) => (
+        <li key={event.id} className="w-[17rem] shrink-0 snap-start sm:w-[19rem]">
+          <EventPoster event={event} registered={seats[event.id]} past={past} />
+        </li>
+      ))}
+    </PosterRail>
+  );
+}
 
 export function EventsSection({
   upcoming,
@@ -16,30 +39,22 @@ export function EventsSection({
   seats: Record<string, number>;
 }) {
   return (
-    <section id="events" aria-labelledby="events-title" className="relative py-24 sm:py-28">
-      <div
-        className="absolute inset-x-0 top-0 -z-10 h-full bg-gradient-to-b from-transparent via-accent/[0.03] to-transparent"
-        aria-hidden
-      />
-      <Container className="max-w-5xl">
+    <section id="events" aria-labelledby="events-title" className="relative overflow-x-clip py-24 sm:py-28">
+      <Container>
         <SectionHeading
           id="events-title"
-          kicker="04 — Events"
-          title="Workshops, CTFs & hackathons"
+          kicker="04 · Workshops, CTFs & hackathons"
+          title="Events"
           description="Register in one click, get a QR ticket instantly, and check in at the venue."
-          action={
-            <ButtonLink href="/events" variant="outline">
-              All events <ArrowRight className="size-4" aria-hidden />
-            </ButtonLink>
-          }
         />
         <EventsTabs
           idPrefix="home-events"
+          centered
           upcomingCount={upcoming.length}
           pastCount={past.length}
           upcoming={
             upcoming.length ? (
-              <EventTimeline events={upcoming} seats={seats} />
+              <Posters events={upcoming} seats={seats} label="Upcoming events" />
             ) : (
               <EmptyState
                 icon={<CalendarX2 className="size-5" />}
@@ -48,8 +63,19 @@ export function EventsSection({
               />
             )
           }
-          past={past.length ? <EventTimeline events={past} seats={seats} past /> : <EmptyState title="No past events yet" />}
+          past={
+            past.length ? (
+              <Posters events={past} seats={seats} past label="Past events" />
+            ) : (
+              <EmptyState title="No past events yet" />
+            )
+          }
         />
+        <div className="mt-8 flex justify-center">
+          <ButtonLink href="/events" variant="neon" className="px-6 font-display text-[0.7rem] tracking-[0.18em] uppercase">
+            All events <ArrowRight className="size-4" aria-hidden />
+          </ButtonLink>
+        </div>
       </Container>
     </section>
   );

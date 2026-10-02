@@ -1,6 +1,7 @@
 import { Award, BadgeCheck, ExternalLink, Flag, Newspaper, Sparkles, Trophy, type LucideIcon } from "lucide-react";
 import type { Achievement, AchievementCategory } from "@/lib/types";
-import { formatDate, isSafeHttpUrl } from "@/lib/utils";
+import { cn, formatDate, isSafeHttpUrl } from "@/lib/utils";
+import { ChamferFrame } from "@/components/ui/chamfer-frame";
 import { EmptyState } from "@/components/ui/feedback";
 import { Reveal } from "@/components/ui/reveal";
 import { Container, SectionHeading } from "@/components/ui/section-heading";
@@ -17,53 +18,65 @@ const categoryMeta: Record<AchievementCategory, { icon: LucideIcon; label: strin
 function AchievementCard({ item, featured }: { item: Achievement; featured?: boolean }) {
   const { icon: Icon, label } = categoryMeta[item.category];
   return (
-    <article
-      className={
-        featured
-          ? "relative h-full overflow-hidden rounded-2xl border border-warning/25 bg-gradient-to-br from-warning/[0.08] via-surface to-surface p-6 sm:p-7"
-          : "h-full card card-hover p-5"
-      }
+    <ChamferFrame
+      size={featured ? 26 : 20}
+      tone={featured ? "gold" : "default"}
+      className="h-full"
+      innerClassName={cn(
+        "relative overflow-hidden",
+        featured ? "bg-gradient-to-br from-[#1c1708] via-surface to-surface p-6 sm:p-7" : "bg-surface/95 p-5",
+      )}
     >
-      {featured ? <div className="absolute -top-16 -right-16 size-48 rounded-full bg-warning/10 blur-3xl" aria-hidden /> : null}
-      <div className="relative flex items-start justify-between gap-4">
-        <span
-          className={
-            featured
-              ? "flex size-12 items-center justify-center rounded-xl bg-warning/15 text-warning"
-              : "flex size-10 items-center justify-center rounded-xl bg-white/[0.05] text-primary"
-          }
-        >
-          <Icon className={featured ? "size-6" : "size-5"} aria-hidden />
-        </span>
-        {item.position ? (
-          <span className="rounded-full border border-warning/30 bg-warning/10 px-2.5 py-0.5 font-mono text-[0.7rem] tracking-wider text-warning uppercase">
-            {item.position}
-          </span>
+      <article className="h-full">
+        {featured ? (
+          <div
+            className="absolute -top-28 -right-28 size-72 bg-[radial-gradient(closest-side,rgb(255_212_59/0.14),transparent)]"
+            aria-hidden
+          />
         ) : null}
-      </div>
-      <p className="relative mt-5 font-mono text-[0.68rem] tracking-[0.18em] text-faint uppercase">
-        {label}
-        {item.achieved_on ? <> · {formatDate(item.achieved_on)}</> : null}
-      </p>
-      <h3
-        className={featured ? "relative mt-2 text-xl font-semibold text-ink sm:text-2xl" : "relative mt-2 font-semibold text-ink"}
-      >
-        {item.title}
-      </h3>
-      <p className="relative mt-2 text-sm text-primary/90">{item.recipients}</p>
-      {item.description ? <p className="relative mt-3 text-sm leading-relaxed text-muted">{item.description}</p> : null}
-      {isSafeHttpUrl(item.link_url) ? (
-        <a
-          href={item.link_url}
-          target="_blank"
-          rel="noopener noreferrer"
-          className="relative mt-4 inline-flex items-center gap-1.5 text-sm text-cyan hover:underline"
+        <div className="relative flex items-start justify-between gap-4">
+          <span
+            className={
+              featured
+                ? "flex size-12 items-center justify-center rounded-xl bg-gold/15 text-gold"
+                : "flex size-10 items-center justify-center rounded-xl bg-white/[0.05] text-primary"
+            }
+          >
+            <Icon className={featured ? "size-6" : "size-5"} aria-hidden />
+          </span>
+          {item.position ? (
+            <span className="rounded-full border border-gold/40 bg-gold/10 px-2.5 py-0.5 font-display text-[0.62rem] font-bold tracking-[0.16em] text-gold uppercase">
+              {item.position}
+            </span>
+          ) : null}
+        </div>
+        <p className="relative mt-5 font-mono text-[0.68rem] tracking-[0.18em] text-faint uppercase">
+          {label}
+          {item.achieved_on ? <> · {formatDate(item.achieved_on)}</> : null}
+        </p>
+        <h3
+          className={cn(
+            "relative mt-2 font-display font-bold tracking-[0.04em] text-ink uppercase",
+            featured ? "text-lg sm:text-xl" : "text-base",
+          )}
         >
-          Read more <ExternalLink className="size-3.5" aria-hidden />
-          <span className="sr-only">about {item.title}</span>
-        </a>
-      ) : null}
-    </article>
+          {item.title}
+        </h3>
+        <p className="relative mt-2 text-sm text-primary/90">{item.recipients}</p>
+        {item.description ? <p className="relative mt-3 text-sm leading-relaxed text-muted">{item.description}</p> : null}
+        {isSafeHttpUrl(item.link_url) ? (
+          <a
+            href={item.link_url}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="relative mt-4 inline-flex items-center gap-1.5 text-sm text-cyan hover:underline"
+          >
+            Read more <ExternalLink className="size-3.5" aria-hidden />
+            <span className="sr-only">about {item.title}</span>
+          </a>
+        ) : null}
+      </article>
+    </ChamferFrame>
   );
 }
 
@@ -76,12 +89,8 @@ export function HallOfFame({ achievements }: { achievements: Achievement[] }) {
       <Container>
         <SectionHeading
           id="hof-title"
-          kicker="06 — Hall of Fame"
-          title={
-            <>
-              Wins, ranks &amp; <span className="text-gradient">firsts</span>
-            </>
-          }
+          kicker="06 · Wins, ranks & firsts"
+          title="Hall of Fame"
           description="Hackathon trophies, CTF podiums, certifications and research — earned by ISSA members."
         />
         {achievements.length === 0 ? (
@@ -95,7 +104,7 @@ export function HallOfFame({ achievements }: { achievements: Achievement[] }) {
             {featured.length ? (
               <ul className="grid gap-5 lg:grid-cols-3">
                 {featured.map((item, i) => (
-                  <Reveal as="li" key={item.id} delay={i * 0.08}>
+                  <Reveal as="li" key={item.id} delay={i * 0.08} className="h-full">
                     <AchievementCard item={item} featured />
                   </Reveal>
                 ))}
@@ -104,7 +113,7 @@ export function HallOfFame({ achievements }: { achievements: Achievement[] }) {
             {rest.length ? (
               <ul className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {rest.map((item, i) => (
-                  <Reveal as="li" key={item.id} delay={(i % 3) * 0.06}>
+                  <Reveal as="li" key={item.id} delay={(i % 3) * 0.06} className="h-full">
                     <AchievementCard item={item} />
                   </Reveal>
                 ))}

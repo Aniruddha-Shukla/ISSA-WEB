@@ -66,7 +66,11 @@ export function LearningHub({ resources }: { resources: LearningResource[] }) {
             />
           </div>
           <div className="flex flex-wrap items-center gap-4">
-            <div role="group" aria-label="Filter by level" className="inline-flex rounded-xl border border-line bg-surface-2 p-1">
+            <div
+              role="group"
+              aria-label="Filter by level"
+              className="inline-flex rounded-full border border-line-strong bg-black/60 p-1"
+            >
               {levels.map((l) => (
                 <button
                   key={l.id}
@@ -74,8 +78,8 @@ export function LearningHub({ resources }: { resources: LearningResource[] }) {
                   aria-pressed={level === l.id}
                   onClick={() => setLevel(l.id)}
                   className={cn(
-                    "rounded-lg px-3 py-1 text-sm transition-colors",
-                    level === l.id ? "bg-surface-3 text-ink ring-1 ring-line-strong" : "text-muted hover:text-ink",
+                    "rounded-full px-3.5 py-1 font-display text-[0.62rem] font-semibold tracking-[0.14em] uppercase transition-colors",
+                    level === l.id ? "bg-surface-3 text-ink ring-1 ring-primary/40" : "text-muted hover:text-ink",
                   )}
                 >
                   {l.label}
@@ -117,7 +121,10 @@ export function LearningHub({ resources }: { resources: LearningResource[] }) {
         <div className="space-y-12">
           {grouped.map(([name, items]) => (
             <section key={name} aria-labelledby={`track-${name}`}>
-              <h2 id={`track-${name}`} className="mb-4 flex items-baseline gap-3 font-display text-xl font-semibold text-ink">
+              <h2
+                id={`track-${name}`}
+                className="mb-5 flex items-baseline gap-3 font-display text-lg font-bold tracking-[0.1em] text-ink uppercase"
+              >
                 {name}
                 <span className="font-mono text-sm font-normal text-faint">{items.length}</span>
               </h2>

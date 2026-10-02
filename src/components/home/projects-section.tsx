@@ -2,11 +2,12 @@
 
 import { useMemo, useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
-import { ArrowUpRight, FolderGit2 } from "lucide-react";
+import { ArrowRight, ChevronDown, FolderGit2 } from "lucide-react";
 import type { Project, ProjectStatus } from "@/lib/types";
 import { cn, isSafeHttpUrl } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { GithubIcon } from "@/components/ui/brand-icons";
+import { Button } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/feedback";
 import { GenerativeArt } from "@/components/ui/generative-art";
 import { Container, SectionHeading } from "@/components/ui/section-heading";
@@ -14,9 +15,92 @@ import { SmartImage } from "@/components/ui/smart-image";
 
 type StatusFilter = "all" | ProjectStatus;
 
+const INITIAL_VISIBLE = 4;
+
+function ProjectRow({ project, flip }: { project: Project; flip: boolean }) {
+  const repo = isSafeHttpUrl(project.repo_url) ? project.repo_url : null;
+  const demo = isSafeHttpUrl(project.demo_url) ? project.demo_url : null;
+  const primary = demo ?? repo;
+
+  return (
+    <div className="grid items-center gap-8 md:grid-cols-2 md:gap-14">
+      {/* chamfered artwork with a neon edge */}
+      <div className={cn("group relative", flip && "md:order-2")}>
+        <div
+          className="absolute -inset-10 -z-10 bg-[radial-gradient(closest-side,rgb(232_121_249/0.16),transparent)]"
+          aria-hidden
+        />
+        <div className="bg-gradient-to-br from-primary/80 via-white/10 to-accent/80 p-[1.5px] [--chamfer:34px] chamfer">
+          <div className="relative aspect-[16/10] overflow-hidden bg-surface-2 [--chamfer:33.4px] chamfer">
+            {project.cover_url ? (
+              <SmartImage
+                src={project.cover_url}
+                alt=""
+                sizes="(min-width: 768px) 45vw, 100vw"
+                className="transition-transform duration-700 group-hover:scale-105"
+              />
+            ) : (
+              <GenerativeArt seed={project.title} className="transition-transform duration-700 group-hover:scale-105" />
+            )}
+          </div>
+        </div>
+      </div>
+
+      <div className={cn(flip && "md:order-1 md:text-right")}>
+        <div className={cn("flex flex-wrap gap-2", flip && "md:justify-end")}>
+          <Badge tone={project.status === "ongoing" ? "primary" : "accent"} dot pulse={project.status === "ongoing"}>
+            {project.status}
+          </Badge>
+          {project.is_featured ? <Badge tone="warning">Featured</Badge> : null}
+        </div>
+        <h3 className="mt-4 font-display text-2xl font-bold tracking-[0.06em] text-ink uppercase sm:text-3xl">{project.title}</h3>
+        <p className="mt-4 leading-relaxed text-muted">{project.summary}</p>
+        <ul className={cn("mt-5 flex flex-wrap gap-1.5", flip && "md:justify-end")} aria-label="Topics">
+          {project.tags.map((t) => (
+            <li key={t} className="rounded-md bg-white/[0.05] px-2 py-0.5 font-mono text-[0.7rem] text-faint">
+              #{t.toLowerCase().replace(/\W+/g, "")}
+            </li>
+          ))}
+        </ul>
+        {project.contributors.length ? (
+          <p className="mt-4 text-sm text-faint">
+            <span className="sr-only">Contributors: </span>
+            {project.contributors.join(" · ")}
+          </p>
+        ) : null}
+        {primary ? (
+          <div className={cn("mt-7 flex flex-wrap items-center gap-3", flip && "md:justify-end")}>
+            <a
+              href={primary}
+              target={primary.startsWith("/") ? undefined : "_blank"}
+              rel="noopener noreferrer"
+              className="inline-flex h-11 items-center gap-2 rounded-full px-6 font-display text-[0.7rem] font-semibold tracking-[0.18em] text-ink uppercase btn-neon"
+            >
+              Know more <ArrowRight className="size-4" aria-hidden />
+              <span className="sr-only"> about {project.title}</span>
+            </a>
+            {demo && repo ? (
+              <a
+                href={repo}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="inline-flex size-11 items-center justify-center rounded-full border border-line-strong text-muted transition-colors hover:border-primary/50 hover:text-primary"
+                aria-label={`${project.title} source code on GitHub`}
+              >
+                <GithubIcon size={17} />
+              </a>
+            ) : null}
+          </div>
+        ) : null}
+      </div>
+    </div>
+  );
+}
+
 export function ProjectsSection({ projects }: { projects: Project[] }) {
   const [tag, setTag] = useState<string>("All");
   const [status, setStatus] = useState<StatusFilter>("all");
+  const [expanded, setExpanded] = useState(false);
 
   const tags = useMemo(() => {
     const counts = new Map<string, number>();
@@ -25,19 +109,20 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
   }, [projects]);
 
   const filtered = projects.filter((p) => (tag === "All" || p.tags.includes(tag)) && (status === "all" || p.status === status));
+  const visible = expanded ? filtered : filtered.slice(0, INITIAL_VISIBLE);
 
   return (
     <section id="projects" aria-labelledby="projects-title" className="py-24 sm:py-28">
       <Container>
         <SectionHeading
           id="projects-title"
-          kicker="03 — Projects"
-          title="What we're building"
+          kicker="03 · What we're building"
+          title="Projects"
           description="Open-source tools and research built by club members. Every project welcomes new contributors."
         />
 
-        <div className="mb-8 flex flex-col gap-4 lg:flex-row lg:items-center lg:justify-between">
-          <div role="group" aria-label="Filter projects by topic" className="flex flex-wrap gap-2">
+        <div className="mb-14 flex flex-col items-center gap-4">
+          <div role="group" aria-label="Filter projects by topic" className="flex flex-wrap justify-center gap-2">
             {tags.map((t) => (
               <button
                 key={t}
@@ -47,7 +132,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                 className={cn(
                   "rounded-full border px-3.5 py-1.5 text-sm transition-colors",
                   tag === t
-                    ? "border-primary/50 bg-primary/10 text-primary"
+                    ? "border-primary/60 bg-primary/10 text-primary shadow-[0_0_16px_-6px_rgb(34_211_238/0.8)]"
                     : "border-line text-muted hover:border-line-strong hover:text-ink",
                 )}
               >
@@ -58,7 +143,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
           <div
             role="group"
             aria-label="Filter projects by status"
-            className="inline-flex rounded-xl border border-line bg-surface-2 p-1"
+            className="inline-flex rounded-full border border-line-strong bg-black/60 p-1"
           >
             {(["all", "ongoing", "completed"] as const).map((s) => (
               <button
@@ -67,8 +152,8 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
                 aria-pressed={status === s}
                 onClick={() => setStatus(s)}
                 className={cn(
-                  "rounded-lg px-3 py-1 text-sm capitalize transition-colors",
-                  status === s ? "bg-surface-3 text-ink ring-1 ring-line-strong" : "text-muted hover:text-ink",
+                  "rounded-full px-4 py-1 font-display text-[0.65rem] font-semibold tracking-[0.16em] uppercase transition-colors",
+                  status === s ? "bg-surface-3 text-ink ring-1 ring-primary/40" : "text-muted hover:text-ink",
                 )}
               >
                 {s}
@@ -78,7 +163,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
         </div>
 
         <p className="sr-only" aria-live="polite">
-          Showing {filtered.length} of {projects.length} projects
+          Showing {visible.length} of {projects.length} projects
         </p>
 
         {filtered.length === 0 ? (
@@ -88,89 +173,31 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
             description="Try another topic or status."
           />
         ) : (
-          <motion.ul layout className="grid gap-5 md:grid-cols-2 lg:grid-cols-3">
-            <AnimatePresence mode="popLayout" initial={false}>
-              {filtered.map((project) => (
+          <ul className="space-y-20 sm:space-y-24">
+            <AnimatePresence initial={false}>
+              {visible.map((project, i) => (
                 <motion.li
                   key={project.id}
-                  layout
-                  initial={{ opacity: 0, scale: 0.96 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  exit={{ opacity: 0, scale: 0.96 }}
-                  transition={{ duration: 0.25 }}
-                  className="group flex flex-col overflow-hidden card card-hover"
+                  initial={{ opacity: 0, y: 24 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  exit={{ opacity: 0 }}
+                  transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
                 >
-                  <div className="relative aspect-[16/9] overflow-hidden border-b border-line">
-                    {project.cover_url ? (
-                      <SmartImage
-                        src={project.cover_url}
-                        alt=""
-                        className="transition-transform duration-500 group-hover:scale-105"
-                      />
-                    ) : (
-                      <GenerativeArt seed={project.title} className="transition-transform duration-500 group-hover:scale-105" />
-                    )}
-                    <div className="absolute top-3 left-3 flex gap-2">
-                      <Badge
-                        tone={project.status === "ongoing" ? "primary" : "accent"}
-                        dot
-                        pulse={project.status === "ongoing"}
-                        className="backdrop-blur"
-                      >
-                        {project.status}
-                      </Badge>
-                      {project.is_featured ? (
-                        <Badge tone="warning" className="backdrop-blur">
-                          Featured
-                        </Badge>
-                      ) : null}
-                    </div>
-                  </div>
-                  <div className="flex flex-1 flex-col p-5">
-                    <h3 className="text-lg font-semibold text-ink">{project.title}</h3>
-                    <p className="mt-2 text-sm leading-relaxed text-muted">{project.summary}</p>
-                    <ul className="mt-4 flex flex-wrap gap-1.5" aria-label="Topics">
-                      {project.tags.map((t) => (
-                        <li key={t} className="rounded-md bg-white/[0.04] px-2 py-0.5 font-mono text-[0.7rem] text-faint">
-                          #{t.toLowerCase().replace(/\W+/g, "")}
-                        </li>
-                      ))}
-                    </ul>
-                    {project.contributors.length ? (
-                      <p className="mt-4 text-xs text-faint">
-                        <span className="sr-only">Contributors: </span>
-                        {project.contributors.join(" · ")}
-                      </p>
-                    ) : null}
-                    <div className="mt-auto flex flex-wrap gap-2 pt-5">
-                      {isSafeHttpUrl(project.repo_url) ? (
-                        <a
-                          href={project.repo_url}
-                          target="_blank"
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 rounded-lg border border-line px-3 py-1.5 text-sm text-ink transition-colors hover:border-primary/40 hover:text-primary"
-                        >
-                          <GithubIcon size={15} /> Code<span className="sr-only"> for {project.title} on GitHub</span>
-                        </a>
-                      ) : null}
-                      {isSafeHttpUrl(project.demo_url) ? (
-                        <a
-                          href={project.demo_url}
-                          target={project.demo_url.startsWith("/") ? undefined : "_blank"}
-                          rel="noopener noreferrer"
-                          className="inline-flex items-center gap-1.5 rounded-lg bg-primary/10 px-3 py-1.5 text-sm text-primary transition-colors hover:bg-primary/20"
-                        >
-                          Live demo <ArrowUpRight className="size-3.5" aria-hidden />
-                          <span className="sr-only"> of {project.title}</span>
-                        </a>
-                      ) : null}
-                    </div>
-                  </div>
+                  <ProjectRow project={project} flip={i % 2 === 1} />
                 </motion.li>
               ))}
             </AnimatePresence>
-          </motion.ul>
+          </ul>
         )}
+
+        {filtered.length > INITIAL_VISIBLE ? (
+          <div className="mt-16 flex justify-center">
+            <Button variant="outline" onClick={() => setExpanded((v) => !v)} aria-expanded={expanded}>
+              {expanded ? "Show fewer" : `Show all ${filtered.length} projects`}
+              <ChevronDown className={cn("size-4 transition-transform", expanded && "rotate-180")} aria-hidden />
+            </Button>
+          </div>
+        ) : null}
       </Container>
     </section>
   );

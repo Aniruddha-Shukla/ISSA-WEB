@@ -39,7 +39,7 @@ export function SelfPacedQuiz({ quiz }: { quiz: QuizSummary }) {
 
   const remaining = useCountdown(phase === "playing" ? deadline : null);
   const { rows, refresh: refreshBoard } = useLeaderboard(quiz.id, 50);
-  useQuizRealtime(quiz.id, { onAttemptsChange: () => void refreshBoard(), pollMs: 10000 });
+  useQuizRealtime(quiz.id, { onAttemptsChange: () => void refreshBoard(), pollMs: 10000, attemptsPollMs: 15000 });
 
   const loadSnapshot = useCallback(async () => {
     const { data } = await getSupabaseBrowserClient().rpc("get_live_state", { p_quiz_id: quiz.id });

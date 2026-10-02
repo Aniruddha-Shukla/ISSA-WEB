@@ -42,7 +42,11 @@ export function GalleryGrid({ items, showFilters = false }: { items: GalleryItem
   return (
     <>
       {showFilters ? (
-        <div role="group" aria-label="Filter gallery" className="mb-6 inline-flex rounded-xl border border-line bg-surface-2 p-1">
+        <div
+          role="group"
+          aria-label="Filter gallery"
+          className="mb-6 inline-flex rounded-full border border-line-strong bg-black/60 p-1"
+        >
           {(
             [
               ["all", "All"],
@@ -56,8 +60,8 @@ export function GalleryGrid({ items, showFilters = false }: { items: GalleryItem
               aria-pressed={filter === value}
               onClick={() => setFilter(value)}
               className={cn(
-                "rounded-lg px-3.5 py-1 text-sm transition-colors",
-                filter === value ? "bg-surface-3 text-ink ring-1 ring-line-strong" : "text-muted hover:text-ink",
+                "rounded-full px-4 py-1 font-display text-[0.65rem] font-semibold tracking-[0.16em] uppercase transition-colors",
+                filter === value ? "bg-surface-3 text-ink ring-1 ring-primary/40" : "text-muted hover:text-ink",
               )}
             >
               {label}
@@ -72,12 +76,12 @@ export function GalleryGrid({ items, showFilters = false }: { items: GalleryItem
           return (
             <li
               key={item.id}
-              className={cn("group relative overflow-hidden rounded-2xl border border-line bg-surface", spans[i % spans.length])}
+              className={cn("group relative overflow-hidden bg-surface [--chamfer:20px] chamfer", spans[i % spans.length])}
             >
               <button
                 type="button"
                 onClick={() => setIndex(i)}
-                className="absolute inset-0 h-full w-full text-left"
+                className="absolute inset-0 h-full w-full text-left focus-visible:ring-2 focus-visible:ring-primary focus-visible:outline-none focus-visible:ring-inset"
                 aria-label={`Open ${item.media_type === "video" ? "video" : "photo"}: ${item.title}`}
               >
                 {thumb ? (

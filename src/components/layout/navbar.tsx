@@ -99,13 +99,16 @@ export function Navbar() {
     <header
       className={cn(
         "sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-300",
-        scrolled || mobileOpen ? "border-x-0 border-t-0 border-line glass" : "border-transparent bg-transparent",
+        scrolled || mobileOpen ? "border-line bg-black/70 backdrop-blur-xl" : "border-transparent bg-transparent",
       )}
     >
-      <nav aria-label="Main" className="mx-auto flex h-16 max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8">
+      <nav
+        aria-label="Main"
+        className="mx-auto flex h-[4.5rem] max-w-7xl items-center justify-between gap-4 px-4 sm:px-6 lg:px-8"
+      >
         <Logo />
 
-        <ul className="hidden items-center gap-1 lg:flex">
+        <ul className="hidden items-center gap-0.5 xl:flex">
           {mainNav.map((item) => {
             const active = isActive(item.href, item.section);
             return (
@@ -114,7 +117,7 @@ export function Navbar() {
                   href={item.href}
                   aria-current={active ? (item.section ? "location" : "page") : undefined}
                   className={cn(
-                    "relative rounded-lg px-3 py-2 text-sm font-medium transition-colors",
+                    "relative rounded-lg px-3 py-2 font-display text-[0.68rem] font-semibold tracking-[0.16em] uppercase transition-colors",
                     active ? "text-ink" : "text-muted hover:text-ink",
                   )}
                 >
@@ -122,7 +125,7 @@ export function Navbar() {
                   {active ? (
                     <motion.span
                       layoutId="nav-underline"
-                      className="absolute inset-x-3 -bottom-px h-px bg-gradient-to-r from-primary to-cyan"
+                      className="absolute inset-x-3 -bottom-0.5 h-0.5 rounded-full bg-gradient-to-r from-primary to-accent shadow-[0_0_10px_rgb(34_211_238/0.8)]"
                       transition={{ type: "spring", stiffness: 380, damping: 32 }}
                     />
                   ) : null}
@@ -137,7 +140,7 @@ export function Navbar() {
           <button
             ref={toggleRef}
             type="button"
-            className="rounded-lg p-2 text-muted transition-colors hover:bg-white/5 hover:text-ink lg:hidden"
+            className="rounded-lg p-2 text-muted transition-colors hover:bg-white/5 hover:text-ink xl:hidden"
             aria-expanded={mobileOpen}
             aria-controls="mobile-nav"
             aria-label={mobileOpen ? "Close menu" : "Open menu"}
@@ -156,7 +159,7 @@ export function Navbar() {
             animate={{ height: "auto", opacity: 1 }}
             exit={{ height: 0, opacity: 0 }}
             transition={{ duration: 0.22 }}
-            className="overflow-hidden border-t border-line lg:hidden"
+            className="overflow-hidden border-t border-line xl:hidden"
           >
             <ul className="mx-auto flex max-w-7xl flex-col gap-1 px-4 py-4 sm:px-6">
               {mainNav.map((item) => (
@@ -165,7 +168,7 @@ export function Navbar() {
                     href={item.href}
                     onClick={() => setMobileOpen(false)}
                     className={cn(
-                      "block rounded-lg px-3 py-2.5 font-medium text-base",
+                      "block rounded-lg px-3 py-2.5 font-display text-sm font-semibold tracking-[0.14em] uppercase",
                       isActive(item.href, item.section) ? "bg-white/5 text-ink" : "text-muted hover:bg-white/5 hover:text-ink",
                     )}
                   >

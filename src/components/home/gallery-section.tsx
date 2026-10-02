@@ -10,16 +10,16 @@ export function GallerySection({ items }: { items: GalleryItem[] }) {
       <Container>
         <SectionHeading
           id="gallery-title"
-          kicker="07 — Gallery"
-          title="Moments from the lab"
+          kicker="07 · Moments from the lab"
+          title="Gallery"
           description="Photos and video recaps from Hack Nights, CTF finals, talks and hackathons."
-          action={
-            <ButtonLink href="/gallery" variant="outline">
-              Full gallery <ArrowRight className="size-4" aria-hidden />
-            </ButtonLink>
-          }
         />
         <GalleryGrid items={items} />
+        <div className="mt-12 flex justify-center">
+          <ButtonLink href="/gallery" variant="neon" className="px-6 font-display text-[0.7rem] tracking-[0.18em] uppercase">
+            Full gallery <ArrowRight className="size-4" aria-hidden />
+          </ButtonLink>
+        </div>
       </Container>
     </section>
   );

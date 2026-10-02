@@ -14,7 +14,8 @@
     "db:seed:generate": "node scripts/generate-seed.mjs",
     "format": "prettier --write .",
     "format:check": "prettier --check .",
-    "test:smoke": "node scripts/smoke-test.mjs"
+    "test:smoke": "node scripts/smoke-test.mjs",
+    "test:load": "node scripts/load-test.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

@@ -28,7 +28,7 @@ export function ChatWidget() {
         aria-expanded={open}
         aria-controls="issa-assistant"
         aria-label={open ? "Close ISSA assistant" : "Open ISSA assistant"}
-        className="fixed right-5 bottom-5 z-[60] flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-cyan text-on-primary shadow-[0_10px_40px_-8px_rgb(46_242_177/0.6)] ring-1 ring-white/20 sm:right-6 sm:bottom-6"
+        className="fixed right-5 bottom-5 z-[60] flex size-14 items-center justify-center rounded-full bg-gradient-to-br from-primary to-accent text-on-primary shadow-[0_10px_40px_-8px_rgb(232_121_249/0.6)] ring-1 ring-white/20 sm:right-6 sm:bottom-6"
       >
         {!open && !everOpened ? (
           <span className="absolute inset-0 animate-pulse-ring rounded-full bg-primary/60" aria-hidden />

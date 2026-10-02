@@ -49,7 +49,7 @@ export function Tabs<T extends string>({
     <div
       role="tablist"
       aria-label={label}
-      className={cn("inline-flex flex-wrap gap-1 rounded-xl border border-line bg-surface-2 p-1", className)}
+      className={cn("inline-flex flex-wrap gap-1 rounded-full border border-line-strong bg-black/60 p-1", className)}
     >
       {tabs.map((tab, index) => {
         const selected = tab.id === value;
@@ -68,8 +68,8 @@ export function Tabs<T extends string>({
             onClick={() => onChange(tab.id)}
             onKeyDown={(e) => onKeyDown(e, index)}
             className={cn(
-              "inline-flex items-center gap-2 rounded-lg px-3.5 py-1.5 text-sm font-medium transition-colors",
-              selected ? "bg-surface-3 text-ink shadow-sm ring-1 ring-line-strong" : "text-muted hover:text-ink",
+              "inline-flex items-center gap-2 rounded-full px-4 py-1.5 font-display text-[0.68rem] font-semibold tracking-[0.16em] uppercase transition-colors",
+              selected ? "bg-surface-3 text-ink shadow-sm ring-1 ring-primary/40" : "text-muted hover:text-ink",
             )}
           >
             {tab.label}

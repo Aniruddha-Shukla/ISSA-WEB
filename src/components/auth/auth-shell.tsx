@@ -14,8 +14,14 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
     <div className="mx-auto grid min-h-[calc(100dvh-4rem)] max-w-6xl items-center gap-10 px-4 py-12 sm:px-6 lg:grid-cols-2 lg:px-8">
       <div className="relative hidden overflow-hidden rounded-3xl border border-line bg-surface p-10 lg:block">
         <div className="absolute inset-0 bg-grid mask-radial opacity-60" aria-hidden />
-        <div className="absolute -top-20 -left-20 size-72 rounded-full bg-primary/20 blur-[90px]" aria-hidden />
-        <div className="absolute -right-16 -bottom-24 size-72 rounded-full bg-accent/20 blur-[90px]" aria-hidden />
+        <div
+          className="absolute -top-40 -left-40 size-[28rem] bg-[radial-gradient(closest-side,rgb(34_211_238/0.2),transparent)]"
+          aria-hidden
+        />
+        <div
+          className="absolute -right-36 -bottom-44 size-[28rem] bg-[radial-gradient(closest-side,rgb(232_121_249/0.2),transparent)]"
+          aria-hidden
+        />
         <div className="relative">
           <LogoMark className="size-12" />
           <p className="mt-8 font-mono text-xs tracking-[0.22em] text-primary uppercase">{siteConfig.fullName}</p>

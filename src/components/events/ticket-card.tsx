@@ -24,19 +24,19 @@ function downloadTicketImage(qrCanvas: HTMLCanvasElement, event: ClubEvent, regi
   const ctx = canvas.getContext("2d");
   if (!ctx) return;
 
-  ctx.fillStyle = "#05070b";
+  ctx.fillStyle = "#000000";
   ctx.fillRect(0, 0, W, H);
   const glow = ctx.createRadialGradient(W * 0.2, 0, 0, W * 0.2, 0, W);
-  glow.addColorStop(0, "rgba(46,242,177,0.25)");
-  glow.addColorStop(1, "rgba(46,242,177,0)");
+  glow.addColorStop(0, "rgba(34,211,238,0.25)");
+  glow.addColorStop(1, "rgba(34,211,238,0)");
   ctx.fillStyle = glow;
   ctx.fillRect(0, 0, W, H);
 
-  ctx.fillStyle = "#2ef2b1";
+  ctx.fillStyle = "#22d3ee";
   ctx.font = "600 22px monospace";
   ctx.fillText(`${siteConfig.shortName} // EVENT TICKET`, 56, 80);
 
-  ctx.fillStyle = "#e7edf5";
+  ctx.fillStyle = "#f4f4f6";
   ctx.font = "700 40px sans-serif";
   const words = event.title.split(" ");
   let line = "";
@@ -53,7 +53,7 @@ function downloadTicketImage(qrCanvas: HTMLCanvasElement, event: ClubEvent, regi
   }
   ctx.fillText(line, 56, y);
 
-  ctx.fillStyle = "#9aa8bb";
+  ctx.fillStyle = "#a8a8b4";
   ctx.font = "400 24px sans-serif";
   ctx.fillText(formatEventWhen(event.starts_at, event.ends_at), 56, y + 50);
   if (event.location) ctx.fillText(event.location, 56, y + 86);
@@ -67,11 +67,11 @@ function downloadTicketImage(qrCanvas: HTMLCanvasElement, event: ClubEvent, regi
   ctx.fill();
   ctx.drawImage(qrCanvas, qrX, qrY, qrSize, qrSize);
 
-  ctx.fillStyle = "#e7edf5";
+  ctx.fillStyle = "#f4f4f6";
   ctx.font = "700 42px monospace";
   ctx.textAlign = "center";
   ctx.fillText(registration.ticket_code, W / 2, qrY + qrSize + 90);
-  ctx.fillStyle = "#9aa8bb";
+  ctx.fillStyle = "#a8a8b4";
   ctx.font = "400 22px sans-serif";
   ctx.fillText(holder, W / 2, qrY + qrSize + 130);
 
@@ -128,12 +128,12 @@ export function TicketCard({
       </div>
 
       <div className="flex flex-col items-center px-5 pt-4 pb-5">
-        <div className="rounded-xl bg-white p-3 shadow-[0_0_40px_-8px_rgb(46_242_177/0.5)]">
+        <div className="rounded-xl bg-white p-3 shadow-[0_0_40px_-8px_rgb(34_211_238/0.5)]">
           <QRCodeSVG
             value={url}
             size={168}
             bgColor="#ffffff"
-            fgColor="#05070b"
+            fgColor="#000000"
             level="M"
             title={`Check-in QR code for ticket ${registration.ticket_code}`}
           />
@@ -143,7 +143,7 @@ export function TicketCard({
           value={url}
           size={480}
           bgColor="#ffffff"
-          fgColor="#05070b"
+          fgColor="#000000"
           level="M"
           className="hidden"
           aria-hidden

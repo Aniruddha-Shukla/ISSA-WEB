@@ -10,16 +10,18 @@ export function EventsTabs({
   upcomingCount,
   pastCount,
   idPrefix = "events",
+  centered = false,
 }: {
   upcoming: ReactNode;
   past: ReactNode;
   upcomingCount: number;
   pastCount: number;
   idPrefix?: string;
+  centered?: boolean;
 }) {
   const [tab, setTab] = useState<"upcoming" | "past">("upcoming");
   return (
-    <div>
+    <div className={centered ? "flex flex-col items-center [&>[role=tabpanel]]:w-full" : undefined}>
       <Tabs
         idPrefix={idPrefix}
         label="Event timeline"

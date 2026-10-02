@@ -1,4 +1,4 @@
-import { cn, hashString } from "@/lib/utils";
+import { cn, hashString, mulberry32 } from "@/lib/utils";
 
 /**
  * Deterministic "circuit board" artwork used when an event, project or photo
@@ -7,24 +7,13 @@ import { cn, hashString } from "@/lib/utils";
  */
 
 const palettes: [string, string][] = [
-  ["#2ef2b1", "#38d9f5"],
-  ["#9b8cff", "#38d9f5"],
-  ["#2ef2b1", "#9b8cff"],
-  ["#f472b6", "#9b8cff"],
-  ["#38d9f5", "#60a5fa"],
-  ["#fbbf24", "#f472b6"],
+  ["#22d3ee", "#e879f9"],
+  ["#a78bfa", "#22d3ee"],
+  ["#e879f9", "#f43f5e"],
+  ["#38bdf8", "#818cf8"],
+  ["#ffd43b", "#e879f9"],
+  ["#22d3ee", "#38bdf8"],
 ];
-
-function mulberry32(seed: number) {
-  let a = seed;
-  return () => {
-    a |= 0;
-    a = (a + 0x6d2b79f5) | 0;
-    let t = Math.imul(a ^ (a >>> 15), 1 | a);
-    t = (t + Math.imul(t ^ (t >>> 7), 61 | t)) ^ t;
-    return ((t ^ (t >>> 14)) >>> 0) / 4294967296;
-  };
-}
 
 export function GenerativeArt({
   seed,
@@ -75,24 +64,24 @@ export function GenerativeArt({
         <radialGradient id={`${id}-orb`} cx={orbX / W} cy={orbY / H} r="0.75">
           <stop offset="0" stopColor={c1} stopOpacity="0.55" />
           <stop offset="0.45" stopColor={c2} stopOpacity="0.16" />
-          <stop offset="1" stopColor="#05070b" stopOpacity="0" />
+          <stop offset="1" stopColor="#000" stopOpacity="0" />
         </radialGradient>
         <pattern id={`${id}-grid`} width={step} height={step} patternUnits="userSpaceOnUse">
           <path d={`M ${step} 0 L 0 0 0 ${step}`} fill="none" stroke="#94a3b8" strokeOpacity="0.08" strokeWidth="1" />
         </pattern>
         <linearGradient id={`${id}-fade`} x1="0" y1="0" x2="0" y2="1">
-          <stop offset="0.5" stopColor="#05070b" stopOpacity="0" />
-          <stop offset="1" stopColor="#05070b" stopOpacity={variant === "photo" ? "0.55" : "0.35"} />
+          <stop offset="0.5" stopColor="#000" stopOpacity="0" />
+          <stop offset="1" stopColor="#000" stopOpacity={variant === "photo" ? "0.55" : "0.35"} />
         </linearGradient>
       </defs>
-      <rect width={W} height={H} fill="#080b12" />
+      <rect width={W} height={H} fill="#07070c" />
       <rect width={W} height={H} fill={`url(#${id}-grid)`} />
       <rect width={W} height={H} fill={`url(#${id}-orb)`} />
       <g fill="none" strokeLinecap="round" strokeLinejoin="round">
         {traces.map((t, i) => (
           <g key={i}>
             <polyline points={t.points} stroke={t.color} strokeOpacity="0.5" strokeWidth="1.5" />
-            <circle cx={t.end[0]} cy={t.end[1]} r="3.5" fill="#080b12" stroke={t.color} strokeWidth="1.5" />
+            <circle cx={t.end[0]} cy={t.end[1]} r="3.5" fill="#07070c" stroke={t.color} strokeWidth="1.5" />
           </g>
         ))}
       </g>

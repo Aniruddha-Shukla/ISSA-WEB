@@ -5,28 +5,35 @@ import type { RealtimeChannel } from "@supabase/supabase-js";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 
 type Options = {
-  /** Called when the quiz row changes (host advanced, revealed, ended…). */
+  /** Called when the quiz row changes (host advanced, revealed, ended…). Pushed over Realtime. */
   onQuizChange?: () => void;
-  /** Called (debounced) when attempts change: joins, answers, scores. */
+  /** Called on a timer to refresh scores / player lists (see attemptsPollMs). */
   onAttemptsChange?: () => void;
-  /** Fallback polling interval while realtime is unavailable. */
+  /** Quiz-state polling interval while Realtime is unavailable. */
   pollMs?: number;
+  /** How often to refresh scores and player lists; 0 = only when Realtime (re)connects. */
+  attemptsPollMs?: number;
+  /** Open a Realtime channel. When false the screen relies on polling alone (see live-quiz). */
+  realtime?: boolean;
   enabled?: boolean;
 };
 
 type SystemMessage = { extension?: string; status?: string; message?: string };
 
 /**
- * Subscribes to Supabase Realtime for one quiz, with a polling fallback so the
- * UI keeps working if Realtime is disabled or the socket drops.
+ * Keeps a quiz screen in sync.
  *
- * - Quiz state and attempts use separate channels: attempts are only readable
- *   by signed-in users, and a rejected binding would otherwise take down the
- *   whole channel (including the quiz-state updates spectators can see).
- * - The realtime socket is given the user's JWT before joining; otherwise a
- *   join that races the session restore runs as `anon` and RLS rejects it.
+ * Only the quiz row (host actions: next / reveal / end) is pushed over Supabase
+ * Realtime: that is one message per viewer per transition. Scores are polled
+ * instead of pushed, because pushing every answer to every player grows with
+ * players² — 100 players would generate ~10,000 messages per question, far over
+ * the free plan's 100 messages/second (Supabase disconnects clients past it).
+ * A polling fallback keeps everything working if Realtime is down.
  */
-export function useQuizRealtime(quizId: string, { onQuizChange, onAttemptsChange, pollMs = 4000, enabled = true }: Options) {
+export function useQuizRealtime(
+  quizId: string,
+  { onQuizChange, onAttemptsChange, pollMs = 4000, attemptsPollMs = 0, realtime = true, enabled = true }: Options,
+) {
   const [connected, setConnected] = useState(false);
   const quizCb = useRef(onQuizChange);
   const attemptsCb = useRef(onAttemptsChange);
@@ -37,21 +44,20 @@ export function useQuizRealtime(quizId: string, { onQuizChange, onAttemptsChange
   });
 
   useEffect(() => {
-    if (!enabled) return;
+    if (!enabled || !realtime) return;
     const supabase = getSupabaseBrowserClient();
-    const channels: RealtimeChannel[] = [];
+    let channel: RealtimeChannel | null = null;
     let cancelled = false;
-    let debounce: ReturnType<typeof setTimeout> | undefined;
-    // Unique topics per mount: supabase-js reuses channels by topic, and a remount
+    // Unique topic per mount: supabase-js reuses channels by topic, and a remount
     // (React StrictMode, fast navigation) would attach to one that is being torn down.
     const suffix = Math.random().toString(36).slice(2, 10);
 
     const start = async () => {
+      // Give the socket the user's JWT before joining; a join that races the
+      // session restore would otherwise run as `anon` (drafts are admin-only).
       await supabase.realtime.setAuth();
-      const { data } = await supabase.auth.getSession();
       if (cancelled) return;
-
-      const quizChannel = supabase
+      channel = supabase
         .channel(`quiz:${quizId}:${suffix}`)
         .on("postgres_changes", { event: "UPDATE", schema: "public", table: "quizzes", filter: `id=eq.${quizId}` }, () =>
           quizCb.current?.(),
@@ -70,45 +76,30 @@ export function useQuizRealtime(quizId: string, { onQuizChange, onAttemptsChange
         .subscribe((status) => {
           if (status !== "SUBSCRIBED") setConnected(false);
         });
-      channels.push(quizChannel);
-
-      if (data.session) {
-        const attemptsChannel = supabase
-          .channel(`quiz-attempts:${quizId}:${suffix}`)
-          .on(
-            "postgres_changes",
-            { event: "*", schema: "public", table: "quiz_attempts", filter: `quiz_id=eq.${quizId}` },
-            () => {
-              clearTimeout(debounce);
-              debounce = setTimeout(() => attemptsCb.current?.(), 600);
-            },
-          )
-          .subscribe();
-        channels.push(attemptsChannel);
-      }
     };
     void start();
 
     return () => {
       cancelled = true;
-      clearTimeout(debounce);
-      channels.forEach((channel) => void supabase.removeChannel(channel));
+      setConnected(false);
+      if (channel) void supabase.removeChannel(channel);
     };
-  }, [quizId, enabled]);
+  }, [quizId, enabled, realtime]);
 
-  // Poll quickly when realtime isn't connected, and every ~8s as a safety net when it is
-  // (a missed "next question" must never leave a player stuck for long).
+  // Quiz state: poll quickly when Realtime isn't connected, and every few seconds as a
+  // safety net when it is (a missed "next question" must never leave a player stuck).
   useEffect(() => {
     if (!enabled) return;
-    const interval = setInterval(
-      () => {
-        quizCb.current?.();
-        attemptsCb.current?.();
-      },
-      connected ? Math.max(pollMs * 3, 8000) : pollMs,
-    );
+    const interval = setInterval(() => quizCb.current?.(), connected ? Math.max(pollMs * 2, 6000) : pollMs);
     return () => clearInterval(interval);
   }, [connected, enabled, pollMs]);
+
+  // Scores / player lists.
+  useEffect(() => {
+    if (!enabled || attemptsPollMs <= 0) return;
+    const interval = setInterval(() => attemptsCb.current?.(), attemptsPollMs);
+    return () => clearInterval(interval);
+  }, [enabled, attemptsPollMs]);
 
   return connected;
 }

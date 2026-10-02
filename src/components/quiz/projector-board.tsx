@@ -18,6 +18,7 @@ function Board({ quizId }: { quizId: string }) {
     onAttemptsChange: () => void refresh(),
     onQuizChange: () => void refresh(),
     pollMs: 3000,
+    attemptsPollMs: 3000,
   });
   return (
     <div>

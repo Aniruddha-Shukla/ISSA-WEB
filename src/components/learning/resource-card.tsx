@@ -37,7 +37,7 @@ export function ResourceCard({ resource, className }: { resource: LearningResour
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col card card-hover p-5 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-primary",
+        "group relative flex h-full flex-col rounded-2xl card-hover glass p-5 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-primary",
         className,
       )}
     >
@@ -54,7 +54,7 @@ export function ResourceCard({ resource, className }: { resource: LearningResour
         {label}
         {resource.source ? ` · ${resource.source}` : ""}
       </p>
-      <h3 className="mt-1.5 font-semibold text-ink">
+      <h3 className="mt-1.5 font-display text-[0.95rem] font-bold tracking-[0.04em] text-ink uppercase">
         <a
           href={href}
           target="_blank"

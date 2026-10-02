@@ -19,6 +19,17 @@ import { QuizReview } from "./quiz-review";
 import { localDeadline, useCountdown } from "./use-countdown";
 import { useQuizRealtime } from "./use-quiz-realtime";
 
+/**
+ * Players who join while the room has at most this many people get instant Realtime
+ * pushes; everyone after that follows along with the fast quiz-row probe instead.
+ * This keeps a 200-person quiz inside the Supabase free plan (200 concurrent
+ * connections, 100 messages/second — each host action sends one message per subscriber).
+ */
+const REALTIME_PLAYER_CAP = 80;
+
+/** ±20% jitter so a room full of phones doesn't poll in lockstep. */
+const jitter = (ms: number) => ms * (0.8 + Math.random() * 0.4);
+
 export function LiveQuiz({ quiz }: { quiz: QuizSummary }) {
   const { user } = useAuth();
   const toast = useToast();
@@ -30,6 +41,10 @@ export function LiveQuiz({ quiz }: { quiz: QuizSummary }) {
   const [pending, setPending] = useState<{ questionId: string; index: number } | null>(null);
   const questionRef = useRef<string | null>(null);
   const phaseRef = useRef<string | null>(null);
+  const rowKeyRef = useRef("");
+  const [pushEnabled, setPushEnabled] = useState(false);
+  const pushDecidedRef = useRef(false);
+  const connectedRef = useRef(false);
 
   const { rows, refresh: refreshBoard } = useLeaderboard(quiz.id, 50);
   const remaining = useCountdown(deadline);
@@ -40,6 +55,12 @@ export function LiveQuiz({ quiz }: { quiz: QuizSummary }) {
     if (error || !data) return;
     const next = data as LiveState;
     phaseRef.current = next.status === "ended" ? "ended" : next.phase;
+    rowKeyRef.current = `${next.status}:${next.phase}:${next.index}`;
+    // Decide once, on the first state after joining: early joiners get live pushes.
+    if (!pushDecidedRef.current && next.me) {
+      pushDecidedRef.current = true;
+      setPushEnabled(next.status !== "ended" && next.participants <= REALTIME_PLAYER_CAP);
+    }
     setState(next);
     if (next.status === "published" && next.phase === "question" && next.question && next.started_at) {
       // Anchor the timer once per question so polling doesn't make it jitter.
@@ -79,13 +100,51 @@ export function LiveQuiz({ quiz }: { quiz: QuizSummary }) {
 
   const connected = useQuizRealtime(quiz.id, {
     onQuizChange: () => void fetchState(),
+    // Only the lobby shows a live player list; scores are fetched when the answer is
+    // revealed (below), so 200 phones aren't all polling the leaderboard mid-question.
     onAttemptsChange: () => {
-      // Scores move on every answer; only refresh the board when it's on screen.
-      if (phaseRef.current !== "question") void refreshBoard();
-      if (phaseRef.current === "lobby") void fetchState();
+      if (phaseRef.current !== "lobby") return;
+      void fetchState();
+      void refreshBoard();
     },
-    pollMs: 3000,
+    pollMs: 30000,
+    attemptsPollMs: 8000,
+    realtime: pushEnabled,
   });
+  useEffect(() => {
+    connectedRef.current = connected;
+  });
+
+  // The quiz-row probe: each phone re-reads just the quiz row — a primary-key lookup —
+  // and loads the full state only when something changed. Phones without a live push
+  // channel probe every ~1.5s while waiting for the next question (3s mid-question), so
+  // nobody falls more than ~2s behind; with a channel it is only a slow safety net in
+  // case a push is dropped.
+  useEffect(() => {
+    let timer: ReturnType<typeof setTimeout>;
+    let stopped = false;
+    const probe = async () => {
+      const { data } = await getSupabaseBrowserClient()
+        .from("quizzes")
+        .select("status, phase, current_index")
+        .eq("id", quiz.id)
+        .maybeSingle();
+      if (stopped) return;
+      if (data) {
+        const key = `${data.status}:${data.phase}:${data.current_index}`;
+        if (key !== rowKeyRef.current) await fetchState();
+        if (data.status === "ended") return; // nothing left to wait for
+      }
+      const waitingForQuestion = phaseRef.current === "lobby" || phaseRef.current === "reveal";
+      const live = connectedRef.current;
+      timer = setTimeout(probe, jitter(waitingForQuestion ? (live ? 4000 : 1500) : live ? 6000 : 3000));
+    };
+    timer = setTimeout(probe, jitter(2000));
+    return () => {
+      stopped = true;
+      clearTimeout(timer);
+    };
+  }, [quiz.id, fetchState]);
 
   const phaseKey = state ? `${state.status}:${state.phase}:${state.index}` : "";
   useEffect(() => {
@@ -146,12 +205,16 @@ export function LiveQuiz({ quiz }: { quiz: QuizSummary }) {
           </span>
         ) : null}
       </div>
+      {/* phones on the fast probe are in sync too; only a push channel that dropped is "syncing" */}
       <span
         className="flex items-center gap-1.5 font-mono text-xs text-faint"
-        title={connected ? "Realtime connected" : "Polling for updates"}
+        title={connected ? "Realtime connected" : pushEnabled ? "Reconnecting — polling for updates" : "Polling for updates"}
       >
-        <span className={connected ? "size-1.5 rounded-full bg-primary" : "size-1.5 rounded-full bg-warning"} aria-hidden />
-        {connected ? "live" : "syncing"}
+        <span
+          className={!pushEnabled || connected ? "size-1.5 rounded-full bg-primary" : "size-1.5 rounded-full bg-warning"}
+          aria-hidden
+        />
+        {!pushEnabled || connected ? "live" : "syncing"}
       </span>
     </div>
   );

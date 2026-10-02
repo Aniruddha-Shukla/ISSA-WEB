@@ -84,7 +84,10 @@ export default async function ProfilePage() {
   return (
     <Container className="py-10 sm:py-14">
       <section className="relative overflow-hidden card p-6 sm:p-8">
-        <div className="absolute -top-24 -right-24 size-72 rounded-full bg-primary/10 blur-3xl" aria-hidden />
+        <div
+          className="absolute -top-36 -right-36 size-96 bg-[radial-gradient(closest-side,rgb(34_211_238/0.12),transparent)]"
+          aria-hidden
+        />
         <div className="relative flex flex-col gap-6 sm:flex-row sm:items-center">
           <Avatar name={name} src={profile.avatar_url} size={88} />
           <div className="min-w-0 flex-1">
