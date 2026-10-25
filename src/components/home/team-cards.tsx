@@ -6,7 +6,7 @@ import { ChamferFrame } from "@/components/ui/chamfer-frame";
 import { GenerativeArt } from "@/components/ui/generative-art";
 import { SmartImage } from "@/components/ui/smart-image";
 
-function SocialLinks({ member, small }: { member: TeamMember; small?: boolean }) {
+export function SocialLinks({ member, small }: { member: TeamMember; small?: boolean }) {
   const links = [
     { href: member.linkedin_url, label: "LinkedIn", icon: LinkedinIcon },
     { href: member.github_url, label: "GitHub", icon: GithubIcon },
@@ -46,18 +46,12 @@ function SocialLinks({ member, small }: { member: TeamMember; small?: boolean })
   );
 }
 
-const sizes = {
-  lg: { frame: 26, image: "(min-width: 640px) 272px, 50vw", name: "text-sm sm:text-lg", pad: "px-3 pb-5 sm:px-5 sm:pb-6" },
-  sm: { frame: 16, image: "(min-width: 1024px) 20vw, (min-width: 640px) 33vw, 50vw", name: "text-[0.8rem]", pad: "px-3 pb-4" },
-} as const;
-
-/** Corner-cut profile card: `lg` for office bearers and leads, `sm` for core members. */
-export function MemberCard({ member, size = "lg" }: { member: TeamMember; size?: keyof typeof sizes }) {
-  const s = sizes[size];
+/** Corner-cut profile card for office bearers and pod leads. */
+export function MemberCard({ member }: { member: TeamMember }) {
   return (
     <ChamferFrame
-      size={s.frame}
-      tone={size === "lg" ? "gold" : "default"}
+      size={26}
+      tone="gold"
       className="group h-full transition-[filter] duration-300 hover:drop-shadow-[0_0_18px_rgb(34_211_238/0.35)]"
       innerClassName="flex flex-col"
     >
@@ -66,17 +60,14 @@ export function MemberCard({ member, size = "lg" }: { member: TeamMember; size?:
           <SmartImage
             src={member.photo_url}
             alt={`Photo of ${member.name}`}
-            sizes={s.image}
+            sizes="(min-width: 640px) 272px, 50vw"
             className="transition-transform duration-500 group-hover:scale-105"
           />
         ) : (
           <>
             <GenerativeArt seed={member.name} className="transition-transform duration-500 group-hover:scale-105" />
             <span
-              className={cn(
-                "absolute inset-0 flex items-center justify-center text-chrome font-display font-black tracking-widest drop-shadow-[0_2px_20px_rgb(0_0_0/0.6)]",
-                size === "sm" ? "text-3xl" : "text-5xl",
-              )}
+              className="absolute inset-0 flex items-center justify-center text-chrome font-display text-5xl font-black tracking-widest drop-shadow-[0_2px_20px_rgb(0_0_0/0.6)]"
               aria-hidden
             >
               {initials(member.name)}
@@ -85,21 +76,14 @@ export function MemberCard({ member, size = "lg" }: { member: TeamMember; size?:
         )}
         <div className="absolute inset-x-0 bottom-0 h-1/3 bg-gradient-to-t from-surface to-transparent" aria-hidden />
       </div>
-      <div className={cn("flex flex-1 flex-col text-center", s.pad)}>
-        <h4 className={cn("font-display font-bold tracking-[0.06em] text-ink uppercase", s.name)}>{member.name}</h4>
-        <p
-          className={cn(
-            "mt-1.5 font-display font-semibold tracking-[0.2em] text-gold uppercase",
-            size === "sm" ? "text-[0.55rem]" : "text-[0.56rem] tracking-[0.14em] sm:text-[0.62rem] sm:tracking-[0.2em]",
-          )}
-        >
+      <div className="flex flex-1 flex-col px-3 pb-5 text-center sm:px-5 sm:pb-6">
+        <h4 className="font-display text-sm font-bold tracking-[0.06em] text-ink uppercase sm:text-lg">{member.name}</h4>
+        <p className="mt-1.5 font-display text-[0.56rem] font-semibold tracking-[0.14em] text-gold uppercase sm:text-[0.62rem] sm:tracking-[0.2em]">
           {member.designation}
         </p>
-        {member.bio && size !== "sm" ? (
-          <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted">{member.bio}</p>
-        ) : null}
-        <div className={cn("mt-auto", size === "sm" ? "pt-3" : "pt-5")}>
-          <SocialLinks member={member} small={size === "sm"} />
+        {member.bio ? <p className="mt-3 line-clamp-3 text-sm leading-relaxed text-muted">{member.bio}</p> : null}
+        <div className="mt-auto pt-5">
+          <SocialLinks member={member} />
         </div>
       </div>
     </ChamferFrame>

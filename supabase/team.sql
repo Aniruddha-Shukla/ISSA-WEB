@@ -10,10 +10,10 @@ insert into public.team_members (id, name, designation, tier, domain, photo_url,
   ('b1000000-0000-4000-8000-000000000004', 'Haripriya', 'Secretary of Documents', 'office_bearer', null, null, null, null, null, null, null, null, null, 4),
   ('b1000000-0000-4000-8000-000000000005', 'Yash', 'PR & Networking Head', 'office_bearer', null, null, null, null, null, null, null, null, null, 5),
   ('b1000000-0000-4000-8000-000000000006', 'Eaktha', 'Treasurer', 'office_bearer', null, null, null, null, null, null, null, null, null, 6),
-  ('b1000000-0000-4000-8000-000000000007', 'Chinmayi', 'Editor-in-Chief', 'office_bearer', null, null, null, null, null, null, null, null, null, 7),
-  ('b1000000-0000-4000-8000-000000000008', 'Dhaval', 'Tech Lead', 'lead', 'Technical', null, null, null, null, null, null, null, null, 8),
-  ('b1000000-0000-4000-8000-000000000009', 'Chaitanya', 'Events Lead', 'lead', 'Event Management', null, null, null, null, null, null, null, null, 9),
-  ('b1000000-0000-4000-8000-000000000010', 'Jayanth', 'Creative Lead', 'lead', 'Creative', null, null, null, null, null, null, null, null, 10)
+  ('b1000000-0000-4000-8000-000000000008', 'Dhaval', 'Tech Lead', 'lead', 'Tech', null, null, null, null, null, null, null, null, 7),
+  ('b1000000-0000-4000-8000-000000000009', 'Chaitanya', 'Events Lead', 'lead', 'Event Management', null, null, null, null, null, null, null, null, 8),
+  ('b1000000-0000-4000-8000-000000000010', 'Jayanth', 'Creative Lead', 'lead', 'Creative', null, null, null, null, null, null, null, null, 9),
+  ('b1000000-0000-4000-8000-000000000007', 'Chinmayi', 'Editor-in-Chief', 'lead', 'Editorial', null, null, null, null, null, null, null, null, 10)
 on conflict (id) do update set
   name = excluded.name,
   designation = excluded.designation,

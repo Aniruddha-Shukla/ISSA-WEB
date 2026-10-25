@@ -4,6 +4,7 @@ import { contact, faqs, membership, rules } from "@/content/club";
 import type { QuizSummary } from "@/lib/data/public";
 import type { ClubEvent, LearningResource, TeamMember } from "@/lib/types";
 import { formatEventWhen } from "@/lib/utils";
+import { teamPods } from "@/config/site";
 import { byTier, describeMember } from "@/lib/team";
 
 /**
@@ -173,7 +174,7 @@ export function offlineAnswer(
         const [name, rest] = describeMember(m).split(" — ");
         return `- **${name}** — ${rest}`;
       }),
-      "\nMeet everyone, including the core team of each domain, in the [Team](/#team) section.",
+      `\nMeet everyone, including the core members of each pod (${teamPods.map((p) => p.name).join(", ")}), in the [Team](/#team) section.`,
     ].join("\n");
   }
 

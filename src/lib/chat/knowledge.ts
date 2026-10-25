@@ -1,6 +1,6 @@
 import "server-only";
 
-import { siteConfig } from "@/config/site";
+import { siteConfig, teamPods } from "@/config/site";
 import { about, activities, contact, faqs, membership, pillars, rules } from "@/content/club";
 import {
   getAchievements,
@@ -67,7 +67,8 @@ export async function buildSystemPrompt() {
     `## Focus areas\n${pillars.map((p) => `- ${p.title}: ${p.description}`).join("\n")}`,
     `## What we do\n${activities.map((a) => `- ${a}`).join("\n")}`,
     `## Membership\n${membership.howToJoin}\nRoles:\n${membership.roles.map((r) => `- ${r.role}${r.description ? `: ${r.description}` : ""}`).join("\n")}\nBenefits:\n${membership.benefits.map((b) => `- ${b}`).join("\n")}`,
-    `## Team (office bearers, then domain leads, then core members)\n${
+    `## Pods (each has a lead and core members)\n${teamPods.map((p) => `- ${p.name}: ${p.description}`).join("\n")}`,
+    `## Team (office bearers, then pod leads, then core members; pod in brackets)\n${
       [...team]
         .sort(byTier)
         .map((m) => `- ${describeMember(m)}${m.bio ? `: ${m.bio}` : ""}`)

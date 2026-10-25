@@ -1,37 +1,39 @@
-import { teamDomains } from "@/config/site";
+import { teamPods } from "@/config/site";
 import type { TeamMember } from "@/lib/types";
 import { slugify } from "@/lib/utils";
 import { EmptyState } from "@/components/ui/feedback";
 import { Reveal } from "@/components/ui/reveal";
 import { Container, SectionHeading } from "@/components/ui/section-heading";
-import { CoreTeams, type DomainGroup } from "./core-teams";
+import { PodPanel, type Pod } from "./pod-panel";
 import { MemberCard, TierHeading } from "./team-cards";
 
-const GENERAL = "General";
+const podNames: string[] = teamPods.map((p) => p.name);
 
-/** Domains in the configured order, then any others admins typed in, then "General". */
-function domainRank(domain: string) {
-  const i = (teamDomains as readonly string[]).indexOf(domain);
-  return i === -1 ? (domain === GENERAL ? 1000 : 500) : i;
-}
-const byDomain = (a: string, b: string) => domainRank(a) - domainRank(b) || a.localeCompare(b);
+/** Pods in the configured order, then any others admins typed in. */
+const podRank = (name: string | null) => {
+  const i = name ? podNames.indexOf(name) : -1;
+  return i === -1 ? podNames.length : i;
+};
 
 export function TeamSection({ team }: { team: TeamMember[] }) {
   const tenure = team.find((m) => m.tenure)?.tenure;
-  // One group: office bearers (in admin order), then each domain's lead.
-  const leadership = [
-    ...team.filter((m) => m.tier !== "lead" && m.tier !== "core"), // office bearers (or no level set yet)
-    ...team.filter((m) => m.tier === "lead").sort((a, b) => byDomain(a.domain ?? GENERAL, b.domain ?? GENERAL)),
-  ];
+  const leads = team.filter((m) => m.tier === "lead").sort((a, b) => podRank(a.domain) - podRank(b.domain));
+  // One group: office bearers (in admin order), then each pod's lead.
+  const leadership = [...team.filter((m) => m.tier !== "lead" && m.tier !== "core"), ...leads];
 
-  const coreMap = new Map<string, TeamMember[]>();
-  for (const m of team.filter((m) => m.tier === "core")) {
-    const domain = m.domain ?? GENERAL;
-    coreMap.set(domain, [...(coreMap.get(domain) ?? []), m]);
-  }
-  const coreGroups: DomainGroup[] = [...coreMap.entries()]
-    .sort(([a], [b]) => byDomain(a, b))
-    .map(([domain, members]) => ({ id: slugify(domain) || "general", domain, members }));
+  // Every configured pod is shown, even before its core members are added.
+  const extraPods = [...new Set(team.map((m) => m.domain).filter((d): d is string => !!d && !podNames.includes(d)))];
+  const pods: Pod[] = [
+    ...teamPods.map((p) => ({ name: p.name, icon: p.icon, description: p.description })),
+    ...extraPods.map((name) => ({ name, icon: "users", description: undefined })),
+  ].map((p) => ({
+    ...p,
+    id: slugify(p.name),
+    lead: leads.find((m) => m.domain === p.name),
+    members: team.filter((m) => m.tier === "core" && m.domain === p.name),
+  }));
+  const unassigned = team.filter((m) => m.tier === "core" && !m.domain);
+  if (unassigned.length) pods.push({ id: "general", name: "General", icon: "users", members: unassigned });
 
   return (
     <section id="team" aria-labelledby="team-title" className="relative py-24 sm:py-28">
@@ -52,17 +54,23 @@ export function TeamSection({ team }: { team: TeamMember[] }) {
                 <ul className="flex flex-wrap justify-center gap-4 sm:gap-6">
                   {leadership.map((m, i) => (
                     <Reveal as="li" key={m.id} delay={(i % 4) * 0.06} className="w-[calc(50%-0.5rem)] sm:w-[17rem]">
-                      <MemberCard member={m} size="lg" />
+                      <MemberCard member={m} />
                     </Reveal>
                   ))}
                 </ul>
               </section>
             ) : null}
 
-            {coreGroups.length ? (
-              <section aria-labelledby="team-cores">
-                <TierHeading id="team-cores">Core team</TierHeading>
-                <CoreTeams groups={coreGroups} />
+            {pods.length ? (
+              <section aria-labelledby="team-pods">
+                <TierHeading id="team-pods">Our pods</TierHeading>
+                <ul className="grid gap-6 lg:grid-cols-2">
+                  {pods.map((pod, i) => (
+                    <Reveal as="li" key={pod.id} delay={(i % 2) * 0.06} className="h-full">
+                      <PodPanel pod={pod} />
+                    </Reveal>
+                  ))}
+                </ul>
               </section>
             ) : null}
           </div>

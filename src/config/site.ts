@@ -29,10 +29,35 @@ export const siteConfig = {
 } as const;
 
 /**
- * Team domains, in the order they appear on the site. Each has one lead and a few
- * core members; office bearers sit above them. Add or rename domains here.
+ * The club's pods, in the order they appear in the Team section. Each pod has one lead
+ * and a few core members; office bearers sit above them. A member's pod (set in the
+ * admin dashboard or supabase/team.sql) must match a name here exactly.
+ * `icon` is a name from components/ui/icon.tsx.
  */
-export const teamDomains = ["Technical", "Event Management", "Marketing", "Creative"] as const;
+export const teamPods = [
+  {
+    name: "Tech",
+    icon: "code",
+    description: "Builds the club's projects, CTF challenges and hands-on workshops — and this website.",
+  },
+  {
+    name: "Event Management",
+    icon: "calendar-check",
+    description: "Plans and runs every event: venues, schedules, registrations and everything on the day.",
+  },
+  {
+    name: "Creative",
+    icon: "palette",
+    description: "Posters, social media creatives, videos and the club's visual identity.",
+  },
+  {
+    name: "Editorial",
+    icon: "pen-line",
+    description: "Event reports, newsletters, blogs and everything the club puts into words.",
+  },
+] as const;
+
+export const teamDomains: string[] = teamPods.map((p) => p.name);
 
 export type NavItem = { label: string; href: string; section?: string };
 

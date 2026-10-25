@@ -98,11 +98,11 @@
       "sort_order": 6
     },
     {
-      "id": "b1000000-0000-4000-8000-000000000007",
-      "name": "Chinmayi",
-      "designation": "Editor-in-Chief",
-      "tier": "office_bearer",
-      "domain": null,
+      "id": "b1000000-0000-4000-8000-000000000008",
+      "name": "Dhaval",
+      "designation": "Tech Lead",
+      "tier": "lead",
+      "domain": "Tech",
       "photo_url": null,
       "bio": null,
       "linkedin_url": null,
@@ -112,22 +112,6 @@
       "email": null,
       "tenure": null,
       "sort_order": 7
-    },
-    {
-      "id": "b1000000-0000-4000-8000-000000000008",
-      "name": "Dhaval",
-      "designation": "Tech Lead",
-      "tier": "lead",
-      "domain": "Technical",
-      "photo_url": null,
-      "bio": null,
-      "linkedin_url": null,
-      "github_url": null,
-      "twitter_url": null,
-      "instagram_url": null,
-      "email": null,
-      "tenure": null,
-      "sort_order": 8
     },
     {
       "id": "b1000000-0000-4000-8000-000000000009",
@@ -143,7 +127,7 @@
       "instagram_url": null,
       "email": null,
       "tenure": null,
-      "sort_order": 9
+      "sort_order": 8
     },
     {
       "id": "b1000000-0000-4000-8000-000000000010",
@@ -151,6 +135,22 @@
       "designation": "Creative Lead",
       "tier": "lead",
       "domain": "Creative",
+      "photo_url": null,
+      "bio": null,
+      "linkedin_url": null,
+      "github_url": null,
+      "twitter_url": null,
+      "instagram_url": null,
+      "email": null,
+      "tenure": null,
+      "sort_order": 9
+    },
+    {
+      "id": "b1000000-0000-4000-8000-000000000007",
+      "name": "Chinmayi",
+      "designation": "Editor-in-Chief",
+      "tier": "lead",
+      "domain": "Editorial",
       "photo_url": null,
       "bio": null,
       "linkedin_url": null,
