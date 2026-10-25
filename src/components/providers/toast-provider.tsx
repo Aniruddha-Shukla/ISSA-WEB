@@ -70,7 +70,7 @@ export function ToastProvider({ children }: { children: ReactNode }) {
                 transition={{ duration: 0.2 }}
                 role={t.tone === "error" ? "alert" : "status"}
                 className={cn(
-                  "pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl glass px-4 py-3 shadow-2xl shadow-black/40",
+                  "pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-xl glass-blur px-4 py-3 shadow-2xl shadow-black/40",
                   tones[t.tone],
                 )}
               >

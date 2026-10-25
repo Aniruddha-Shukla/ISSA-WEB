@@ -7,7 +7,19 @@ export const revalidate = 3600;
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const base = siteConfig.url.replace(/\/$/, "");
   const events = await getEvents();
-  const pages = ["", "/events", "/quizzes", "/learn", "/gallery", "/signup"].map((path) => ({
+  const pages = [
+    "",
+    "/events",
+    "/register",
+    "/play",
+    "/play/flag-hunt",
+    "/play/phishing",
+    "/play/ctf",
+    "/quizzes",
+    "/learn",
+    "/gallery",
+    "/signup",
+  ].map((path) => ({
     url: `${base}${path}`,
     changeFrequency: "weekly" as const,
     priority: path === "" ? 1 : 0.7,

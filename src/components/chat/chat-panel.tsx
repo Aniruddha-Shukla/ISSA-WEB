@@ -168,7 +168,7 @@ export function ChatPanel({ open, onClose }: { open: boolean; onClose: () => voi
           animate={{ opacity: 1, y: 0, scale: 1 }}
           exit={{ opacity: 0, y: 24, scale: 0.97 }}
           transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-          className="fixed right-3 bottom-24 z-[60] flex h-[min(38rem,calc(100dvh-8rem))] w-[calc(100vw-1.5rem)] max-w-[25rem] origin-bottom-right flex-col overflow-hidden rounded-2xl glass shadow-2xl shadow-black/60 sm:right-6 sm:bottom-24"
+          className="fixed right-3 bottom-24 z-[60] flex h-[min(38rem,calc(100dvh-8rem))] w-[calc(100vw-1.5rem)] max-w-[25rem] origin-bottom-right flex-col overflow-hidden rounded-2xl glass-blur shadow-2xl shadow-black/60 sm:right-6 sm:bottom-24"
         >
           <header className="flex items-center gap-3 border-b border-line px-4 py-3">
             <span className="flex size-9 items-center justify-center rounded-xl bg-gradient-to-br from-primary/25 to-cyan/20 text-primary ring-1 ring-primary/30">

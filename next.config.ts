@@ -1,4 +1,5 @@
 import type { NextConfig } from "next";
+import { huntFlags } from "./src/content/flag-hunt";
 
 const securityHeaders = [
   { key: "X-Content-Type-Options", value: "nosniff" },
@@ -20,7 +21,13 @@ const nextConfig: NextConfig = {
     ],
   },
   async headers() {
-    return [{ source: "/:path*", headers: securityHeaders }];
+    // flag hunt: a flag in the response headers of the Play pages
+    const huntHeader = [{ key: "X-ISSA-Flag", value: huntFlags.headers }];
+    return [
+      { source: "/:path*", headers: securityHeaders },
+      { source: "/play", headers: huntHeader },
+      { source: "/play/:path*", headers: huntHeader },
+    ];
   },
 };
 

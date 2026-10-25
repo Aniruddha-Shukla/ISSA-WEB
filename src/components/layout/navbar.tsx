@@ -99,7 +99,7 @@ export function Navbar() {
     <header
       className={cn(
         "sticky top-0 z-50 border-b transition-[background-color,border-color,backdrop-filter] duration-300",
-        scrolled || mobileOpen ? "border-line bg-black/70 backdrop-blur-xl" : "border-transparent bg-transparent",
+        scrolled || mobileOpen ? "border-line bg-black/90" : "border-transparent bg-transparent",
       )}
     >
       <nav

@@ -1,10 +1,9 @@
 import { mulberry32 } from "@/lib/utils";
-import { StarLayer } from "@/components/fx/star-layer";
 
 /**
- * Fixed deep-space backdrop: three tiled SVG star layers (no images or canvas).
- * Two twinkle and all three drift at different speeds as you scroll (StarLayer),
- * using only opacity and transforms, which the browser composites on the GPU.
+ * Fixed deep-space backdrop: three tiled SVG star layers (no images, canvas or JS).
+ * Deliberately static: anything animating behind the page makes every translucent
+ * panel above it repaint while scrolling.
  */
 
 type Star = { x: number; y: number; r: number; o: number };
@@ -20,34 +19,25 @@ function stars(seed: number, count: number, tile: number, [rMin, rMax]: [number,
 }
 
 const layers = [
-  { id: "stars-far", tile: 360, depth: 0.04, stars: stars(7, 70, 360, [0.35, 0.8]), className: "" },
-  { id: "stars-mid", tile: 640, depth: 0.1, stars: stars(21, 46, 640, [0.7, 1.2]), className: "motion-safe:animate-twinkle" },
-  {
-    id: "stars-near",
-    tile: 980,
-    depth: 0.2,
-    stars: stars(42, 22, 980, [1.1, 1.7]),
-    className: "motion-safe:animate-twinkle [animation-delay:-2s] [animation-duration:6s]",
-  },
+  { id: "stars-far", tile: 360, stars: stars(7, 70, 360, [0.35, 0.8]) },
+  { id: "stars-mid", tile: 640, stars: stars(21, 46, 640, [0.7, 1.2]) },
+  { id: "stars-near", tile: 980, stars: stars(42, 22, 980, [1.1, 1.7]) },
 ];
 
 export function Starfield() {
   return (
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden" aria-hidden>
-      {/* nearer layers drift faster as you scroll, for depth */}
       {layers.map((layer) => (
-        <StarLayer key={layer.id} factor={layer.depth} tile={layer.tile}>
-          <svg className={`absolute inset-0 size-full will-change-[opacity] ${layer.className}`}>
-            <defs>
-              <pattern id={layer.id} width={layer.tile} height={layer.tile} patternUnits="userSpaceOnUse">
-                {layer.stars.map((s, i) => (
-                  <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#fff" fillOpacity={s.o} />
-                ))}
-              </pattern>
-            </defs>
-            <rect width="100%" height="100%" fill={`url(#${layer.id})`} />
-          </svg>
-        </StarLayer>
+        <svg key={layer.id} className="absolute inset-0 size-full">
+          <defs>
+            <pattern id={layer.id} width={layer.tile} height={layer.tile} patternUnits="userSpaceOnUse">
+              {layer.stars.map((s, i) => (
+                <circle key={i} cx={s.x} cy={s.y} r={s.r} fill="#fff" fillOpacity={s.o} />
+              ))}
+            </pattern>
+          </defs>
+          <rect width="100%" height="100%" fill={`url(#${layer.id})`} />
+        </svg>
       ))}
       {/* faint nebulae */}
       <div className="absolute -top-[30vh] left-1/2 h-[80vh] w-[110vw] -translate-x-1/2 bg-[radial-gradient(closest-side,rgb(34_211_238/0.07),transparent)]" />

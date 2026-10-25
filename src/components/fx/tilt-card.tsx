@@ -57,7 +57,7 @@ export function TiltCard({
         ref={ref}
         onPointerMove={onMove}
         onPointerLeave={onLeave}
-        className="relative h-full will-change-transform"
+        className="relative h-full"
         style={{ rotateX, rotateY }}
       >
         {children}

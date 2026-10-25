@@ -76,6 +76,26 @@ async function signUp(key) {
 
 const originalSettings = (await service.from("app_settings").select("*").single()).data;
 
+// The seed's event dates are relative to when it ran; move the events this test
+// registers for back into the future so an old local database still works.
+const DAY = 86_400_000;
+for (const [id, days, hours] of [
+  [IDS.hackNight, 5, 3],
+  [IDS.hackathon, 20, 36],
+  [IDS.ctf, 34, 24],
+]) {
+  const start = new Date(Date.now() + days * DAY);
+  await service
+    .from("events")
+    .update({
+      starts_at: start.toISOString(),
+      ends_at: new Date(start.getTime() + hours * 3_600_000).toISOString(),
+      registration_deadline: start.toISOString(),
+      submission_deadline: id === IDS.hackathon ? new Date(start.getTime() + 36 * 3_600_000).toISOString() : null,
+    })
+    .eq("id", id);
+}
+
 try {
   console.log("\n== sign-up & roles");
   await service
@@ -372,6 +392,107 @@ try {
     .from("events")
     .insert({ slug: `nope-${stamp}`, title: "x", summary: "x", starts_at: new Date().toISOString() });
   check(Boolean(blocked.error), "members cannot create events");
+
+  console.log("\n== play: flags, scoreboard, phishing");
+  const CAESAR = "c0000000-0000-4000-8000-000000000006";
+  const anonChallenges = await anon.from("ctf_challenges").select("id, kind");
+  check(anonChallenges.data?.length >= 11, "anon can list published challenges", anonChallenges.error?.message);
+  const anonFlags = await anon.from("ctf_flags").select("*");
+  check(Boolean(anonFlags.error) || anonFlags.data?.length === 0, "anon cannot read flag hashes");
+  const playerFlags = await player.from("ctf_flags").select("*");
+  check(Boolean(playerFlags.error) || playerFlags.data?.length === 0, "players cannot read flag hashes");
+  check(Boolean((await anon.rpc("submit_ctf_flag", { p_challenge_id: CAESAR, p_flag: "x" })).error), "anon cannot submit flags");
+  const wrong = await player.rpc("submit_ctf_flag", { p_challenge_id: CAESAR, p_flag: "ISSA{nope}" });
+  check(wrong.data?.correct === false, "wrong flag is rejected", wrong.error?.message);
+  const right = await player.rpc("submit_ctf_flag", { p_challenge_id: CAESAR, p_flag: "  issa{R0T13_1S_N0T_3NCRYPT10N} " });
+  check(
+    right.data?.correct === true && right.data.points === 100,
+    "right flag scores (case/space-insensitive)",
+    right.data ?? right.error?.message,
+  );
+  check(right.data?.badges?.includes("first-blood"), "first solver earns First Blood", right.data);
+  const again2 = await player.rpc("submit_ctf_flag", { p_challenge_id: CAESAR, p_flag: "ISSA{r0t13_1s_n0t_3ncrypt10n}" });
+  check(again2.data?.already_solved === true && again2.data.points === 0, "solving twice scores once");
+  const ctfBoard = await anon.rpc("ctf_scoreboard", { p_limit: 50 });
+  check(
+    ctfBoard.data?.some((r) => r.display_name === "Smoke player" && Number(r.points) === 100),
+    "scoreboard shows the solve",
+    ctfBoard.error?.message,
+  );
+  const stats2 = await player.rpc("ctf_challenge_stats");
+  check(
+    stats2.data?.find((r) => r.challenge_id === CAESAR)?.solved_by_me === true,
+    "challenge stats mark it solved for the player",
+  );
+  check(
+    Boolean((await player.from("ctf_solves").insert({ user_id: users.player.id, challenge_id: CAESAR, points: 999 })).error),
+    "players cannot write solves directly",
+  );
+  check(
+    Boolean((await player.rpc("set_ctf_flag", { p_challenge_id: CAESAR, p_flag: "ISSA{hijack}" })).error),
+    "players cannot change flags",
+  );
+  const LAYER = "c0000000-0000-4000-8000-000000000007";
+  for (let i = 0; i < 10; i++) await guest.rpc("submit_ctf_flag", { p_challenge_id: LAYER, p_flag: `ISSA{guess-${i}}` });
+  const limited = await guest.rpc("submit_ctf_flag", { p_challenge_id: LAYER, p_flag: "ISSA{guess-10}" });
+  expectError(limited, "too many", "wrong guesses are rate limited");
+  const testChallenge = await admin
+    .from("ctf_challenges")
+    .insert({ slug: `smoke-${stamp}`, title: "Smoke challenge", points: 10, description: "x", is_published: false })
+    .select("id")
+    .single();
+  check(!testChallenge.error, "admin creates a challenge", testChallenge.error?.message);
+  check(
+    !(await admin.rpc("set_ctf_flag", { p_challenge_id: testChallenge.data?.id, p_flag: "ISSA{smoke}" })).error,
+    "admin sets a flag",
+  );
+  check(
+    (await anon.from("ctf_challenges").select("id").eq("id", testChallenge.data?.id)).data?.length === 0,
+    "unpublished challenges stay hidden",
+  );
+  if (testChallenge.data?.id) await service.from("ctf_challenges").delete().eq("id", testChallenge.data.id);
+
+  const best = await player.rpc("submit_phishing_score", { p_score: 900, p_total: 1000 });
+  check(best.data?.best_score === 900, "phishing score saved", best.error?.message);
+  const worse = await player.rpc("submit_phishing_score", { p_score: 500, p_total: 1000 });
+  check(
+    worse.data?.best_score === 900 && worse.data.improved === false && worse.data.plays === 2,
+    "a worse round keeps the best score",
+  );
+  expectError(
+    await player.rpc("submit_phishing_score", { p_score: 1100, p_total: 1000 }),
+    "invalid",
+    "impossible scores are rejected",
+  );
+  const phishBoard = await anon.rpc("phishing_leaderboard", { p_limit: 50 });
+  check(
+    phishBoard.data?.some((r) => r.display_name === "Smoke player"),
+    "phishing leaderboard lists the player",
+    phishBoard.error?.message,
+  );
+
+  console.log("\n== registration links");
+  const link = await admin
+    .from("registration_links")
+    .insert({ title: `Smoke registration ${stamp}`, form_url: "https://forms.gle/example" })
+    .select("id")
+    .single();
+  check(!link.error, "admin adds a registration link", link.error?.message);
+  check(
+    (await anon.from("registration_links").select("id").eq("id", link.data?.id)).data?.length === 1,
+    "anon sees published registration links",
+  );
+  expectError(
+    await player.from("registration_links").insert({ title: "nope", form_url: "https://forms.gle/x" }),
+    "row-level security",
+    "members cannot add registration links",
+  );
+  expectError(
+    await admin.from("registration_links").insert({ title: "bad", form_url: "javascript:alert(1)" }),
+    "check constraint",
+    "registration links must be http(s)",
+  );
+  if (link.data?.id) await service.from("registration_links").delete().eq("id", link.data.id);
 } catch (error) {
   failures.push(`crashed: ${error.message}`);
   console.error(error);

@@ -25,6 +25,8 @@ export type FieldDef = {
   emptyValue?: number;
   /** For slug fields: the field whose value generates the slug. */
   from?: string;
+  /** Form-only: never written to the table; handed to the config's afterSave instead. */
+  virtual?: boolean;
   wide?: boolean;
 };
 
@@ -40,6 +42,8 @@ export type ResourceConfig<T extends { id: string }> = {
   defaults?: Record<string, unknown>;
   publishField?: string;
   rowActions?: (row: T) => ReactNode;
+  /** Runs after a successful save with the row id and the virtual fields' values; return an error message to show. */
+  afterSave?: (id: string, virtual: Record<string, string>, created: boolean) => Promise<string | null>;
 };
 
 type FormValues = Record<string, string | boolean>;
@@ -60,6 +64,7 @@ function toForm(fields: FieldDef[], row: Record<string, unknown> | null, default
 function fromForm(fields: FieldDef[], values: FormValues) {
   const payload: Record<string, unknown> = {};
   for (const f of fields) {
+    if (f.virtual) continue;
     const v = values[f.name];
     if (f.type === "boolean") payload[f.name] = Boolean(v);
     else if (f.type === "tags")
@@ -149,14 +154,24 @@ export function ResourceManager<T extends { id: string }>({ config }: { config: 
     }
     const supabase = getSupabaseBrowserClient();
     const result = editing
-      ? await supabase.from(config.table).update(payload).eq("id", editing.id)
-      : await supabase.from(config.table).insert(payload);
-    setSaving(false);
+      ? await supabase.from(config.table).update(payload).eq("id", editing.id).select("id").single()
+      : await supabase.from(config.table).insert(payload).select("id").single();
     if (result.error) {
+      setSaving(false);
       toast.error(`Couldn't save ${config.singular}`, errorMessage(result.error));
       return;
     }
-    toast.success(editing ? `${config.singular} updated` : `${config.singular} created`);
+    if (config.afterSave) {
+      const virtual = Object.fromEntries(
+        config.fields.filter((f) => f.virtual).map((f) => [f.name, String(values[f.name] ?? "").trim()]),
+      );
+      const problem = await config.afterSave((result.data as { id: string }).id, virtual, !editing);
+      if (problem) toast.error(`${config.singular} saved, but…`, problem);
+      else toast.success(editing ? `${config.singular} updated` : `${config.singular} created`);
+    } else {
+      toast.success(editing ? `${config.singular} updated` : `${config.singular} created`);
+    }
+    setSaving(false);
     close();
     await load();
     void revalidatePublicPages();

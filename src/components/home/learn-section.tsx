@@ -15,7 +15,7 @@ export function LearnSection({ resources }: { resources: LearningResource[] }) {
       <Container>
         <SectionHeading
           id="learn-title"
-          kicker="05 · Start learning today"
+          kicker="06 · Start learning today"
           title="Learn"
           description="Roadmaps, courses and practice platforms the core team actually used — from your first Linux command to your first CTF flag."
         />

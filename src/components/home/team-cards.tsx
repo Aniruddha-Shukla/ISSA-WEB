@@ -49,12 +49,7 @@ export function SocialLinks({ member, small }: { member: TeamMember; small?: boo
 /** Corner-cut profile card for office bearers and pod leads. */
 export function MemberCard({ member }: { member: TeamMember }) {
   return (
-    <ChamferFrame
-      size={26}
-      tone="gold"
-      className="group h-full transition-[filter] duration-300 hover:drop-shadow-[0_0_18px_rgb(34_211_238/0.35)]"
-      innerClassName="flex flex-col"
-    >
+    <ChamferFrame size={26} tone="gold" className="group h-full" innerClassName="flex flex-col">
       <div className="relative aspect-square overflow-hidden">
         {member.photo_url ? (
           <SmartImage

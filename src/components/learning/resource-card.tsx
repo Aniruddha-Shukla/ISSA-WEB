@@ -37,7 +37,7 @@ export function ResourceCard({ resource, className }: { resource: LearningResour
   return (
     <article
       className={cn(
-        "group relative flex h-full flex-col rounded-2xl card-hover glass p-5 has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-primary",
+        "group relative flex h-full flex-col rounded-2xl card-hover p-5 glass has-[a:focus-visible]:ring-2 has-[a:focus-visible]:ring-primary",
         className,
       )}
     >

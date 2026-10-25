@@ -59,7 +59,7 @@ export function UserMenu() {
       {open ? (
         <div
           id={menuId}
-          className="absolute top-[calc(100%+0.5rem)] right-0 z-50 w-64 rounded-2xl glass p-2 shadow-2xl shadow-black/50"
+          className="absolute top-[calc(100%+0.5rem)] right-0 z-50 w-64 rounded-2xl glass-blur p-2 shadow-2xl shadow-black/50"
         >
           <div className="border-b border-line px-3 pt-2 pb-3">
             <p className="truncate text-sm font-medium text-ink">{name}</p>

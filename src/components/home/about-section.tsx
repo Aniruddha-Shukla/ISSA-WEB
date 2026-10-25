@@ -12,7 +12,7 @@ import { CircuitBackdrop } from "./circuit-backdrop";
 function GlassPanel({ title, side, children }: { title: string; side: "left" | "right"; children: ReactNode }) {
   return (
     <ScrubIn from={side} className={cn("lg:w-[64%]", side === "right" && "lg:self-end")}>
-      <div className="rounded-3xl glass p-7 shadow-[0_30px_80px_-40px_rgb(0_0_0/0.9)] sm:p-9">
+      <div className="rounded-3xl p-7 shadow-[0_30px_80px_-40px_rgb(0_0_0/0.9)] glass sm:p-9">
         <h3 className="font-display text-xl font-bold tracking-[0.12em] text-ink uppercase sm:text-2xl">{title}</h3>
         <div className="mt-5">{children}</div>
       </div>

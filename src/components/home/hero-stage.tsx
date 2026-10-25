@@ -1,7 +1,7 @@
 "use client";
 
 import { useRef } from "react";
-import { motion, useScroll, useSpring, useTransform, type MotionValue } from "framer-motion";
+import { motion, useScroll, useTransform, type MotionValue } from "framer-motion";
 import { siteConfig } from "@/config/site";
 import { dottedName } from "@/components/layout/logo";
 import { useFx } from "@/components/fx/use-fx";
@@ -27,7 +27,7 @@ export function HeroStage() {
   const fx = useFx();
   const ref = useRef<HTMLDivElement>(null);
   const { scrollYProgress } = useScroll({ target: ref, offset: ["start start", "end start"] });
-  const p = useSpring(scrollYProgress, { stiffness: 140, damping: 30, mass: 0.35 });
+  const p = scrollYProgress;
 
   const taglineY = useTransform(p, [0, 1], [0, -90]);
   const taglineOpacity = useTransform(p, [0, 0.35], [1, 0]);
@@ -64,7 +64,7 @@ export function HeroStage() {
         <motion.span
           aria-hidden
           style={fx ? { y: lettersY, opacity: lettersOpacity } : undefined}
-          className="block pl-[0.2em] font-display text-[clamp(3.1rem,15.5vw,13.5rem)] leading-none font-black tracking-[0.2em] whitespace-nowrap drop-shadow-[0_8px_40px_rgb(0_0_0/0.9)] select-none"
+          className="block pl-[0.2em] font-display text-[clamp(3.1rem,15.5vw,13.5rem)] leading-none font-black tracking-[0.2em] whitespace-nowrap select-none"
         >
           {letters.map((char, i) => (
             <Letter key={i} char={char} index={i} spread={p} fx={fx} />

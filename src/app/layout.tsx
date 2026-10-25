@@ -5,9 +5,9 @@ import { AppProviders } from "@/components/providers/app-providers";
 import { Navbar } from "@/components/layout/navbar";
 import { Footer } from "@/components/layout/footer";
 import { DemoBanner } from "@/components/layout/demo-banner";
-import { BootScreen } from "@/components/layout/boot-screen";
 import { Starfield } from "@/components/ui/starfield";
 import { ScrollProgress } from "@/components/fx/scroll-progress";
+import { ConsoleEgg } from "@/components/play/console-egg";
 import { ChatWidget } from "@/components/chat/chat-widget";
 import "./globals.css";
 
@@ -48,7 +48,6 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${exo.variable} ${orbitron.variable} ${jetbrains.variable}`} data-scroll-behavior="smooth">
       <body className="flex min-h-dvh flex-col antialiased">
-        <BootScreen />
         <Starfield />
         <a
           href="#main"
@@ -65,6 +64,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
           </main>
           <Footer />
           <ChatWidget />
+          <ConsoleEgg />
         </AppProviders>
       </body>
     </html>

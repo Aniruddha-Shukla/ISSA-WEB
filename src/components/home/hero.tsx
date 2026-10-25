@@ -15,8 +15,8 @@ export function Hero({ stats, nextEvent }: { stats: PublicStats; nextEvent?: Clu
     { label: "Members", value: stats.members },
     { label: "Events hosted", value: stats.events },
     { label: "Projects", value: stats.projects },
-    { label: "Wins & honours", value: stats.achievements },
-  ];
+    { label: "Quiz players", value: stats.quiz_players },
+  ].filter((item) => item.value > 0); // a fresh database shouldn't greet visitors with zeros
 
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden">
@@ -55,22 +55,29 @@ export function Hero({ stats, nextEvent }: { stats: PublicStats; nextEvent?: Clu
           </div>
 
           <div className="space-y-4">
-            <dl className="grid grid-cols-2 gap-3 sm:gap-4">
-              {statItems.map((item) => (
-                <ChamferFrame key={item.label} size={18} innerClassName="bg-surface/90 px-5 py-4 sm:px-6 sm:py-5">
-                  <dt className="font-display text-[0.6rem] tracking-[0.22em] text-gold uppercase">{item.label}</dt>
-                  <dd className="mt-1.5 text-chrome font-display text-3xl font-bold sm:text-4xl">
-                    <CountUp value={item.value} />
-                    {item.value >= 10 ? <span className="text-primary">+</span> : null}
-                  </dd>
-                </ChamferFrame>
-              ))}
-            </dl>
+            {statItems.length ? (
+              <dl className="grid grid-cols-2 gap-3 sm:gap-4">
+                {statItems.map((item, i) => (
+                  <ChamferFrame
+                    key={item.label}
+                    size={18}
+                    className={statItems.length % 2 && i === statItems.length - 1 ? "col-span-2" : undefined}
+                    innerClassName="bg-surface/90 px-5 py-4 sm:px-6 sm:py-5"
+                  >
+                    <dt className="font-display text-[0.6rem] tracking-[0.22em] text-gold uppercase">{item.label}</dt>
+                    <dd className="mt-1.5 text-chrome font-display text-3xl font-bold sm:text-4xl">
+                      <CountUp value={item.value} />
+                      {item.value >= 10 ? <span className="text-primary">+</span> : null}
+                    </dd>
+                  </ChamferFrame>
+                ))}
+              </dl>
+            ) : null}
 
             {nextEvent ? (
               <Link
                 href={`/events/${nextEvent.slug}`}
-                className="group flex items-center gap-4 rounded-2xl glass p-4 transition-colors hover:border-primary/40"
+                className="group flex items-center gap-4 rounded-2xl p-4 transition-colors glass hover:border-primary/40"
               >
                 <span className="flex size-11 shrink-0 items-center justify-center rounded-xl bg-primary/10 text-primary">
                   <CalendarDays className="size-5" aria-hidden />

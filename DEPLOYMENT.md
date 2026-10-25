@@ -54,10 +54,12 @@ git push -u origin main
    ```
 
    (Alternative: open **SQL Editor**, then paste and **Run** each file in `supabase/migrations/`, oldest first:
-   `20260927090000_issa_schema.sql`, then `20260928090000_learning_resources.sql`.)
+   `20260927090000_issa_schema.sql`, `20260928090000_learning_resources.sql`, `20261025090000_team_structure.sql`,
+   then `20261026090000_play_and_registrations.sql`.)
 
 4. Optional sample content: SQL Editor → paste `supabase/seed.sql` → Run. Skip this if you'll add real content from
-   the admin dashboard. `supabase/learning-starter.sql` loads only the 12 real starter learning resources.
+   the admin dashboard. `supabase/learning-starter.sql` loads only the 12 real starter learning resources,
+   `supabase/team.sql` the real team, and `supabase/play-starter.sql` the starter Play challenges (flag hunt + CTF arena).
 5. **Project Settings → API Keys**: copy the **Project URL** and the **publishable** key. Never put the _secret_ /
    _service_role_ key in the app or in Vercel.
 

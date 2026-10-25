@@ -65,22 +65,6 @@ export interface Project {
   is_published: boolean;
 }
 
-export type AchievementCategory = "hackathon" | "ctf" | "certification" | "award" | "publication" | "other";
-
-export interface Achievement {
-  id: string;
-  title: string;
-  recipients: string;
-  category: AchievementCategory;
-  position: string | null;
-  description: string | null;
-  achieved_on: string | null;
-  link_url: string | null;
-  image_url: string | null;
-  is_featured: boolean;
-  is_published: boolean;
-}
-
 export type EventCategory = "workshop" | "hackathon" | "ctf" | "talk" | "competition" | "meetup" | "other";
 export type EventMode = "offline" | "online" | "hybrid";
 
@@ -323,4 +307,46 @@ export interface AdminOverview {
     attended: number;
   }[];
   signups_by_week: { week: string; count: number }[];
+}
+
+export interface RegistrationLink {
+  id: string;
+  title: string;
+  description: string | null;
+  form_url: string;
+  qr_image_url: string | null;
+  event_id: string | null;
+  closes_at: string | null;
+  sort_order: number;
+  is_published: boolean;
+  event?: Pick<ClubEvent, "title" | "slug" | "starts_at"> | null;
+}
+
+export type ChallengeKind = "hunt" | "arena";
+export type ChallengeCategory = "web" | "crypto" | "forensics" | "osint" | "misc";
+export type ChallengeDifficulty = "easy" | "medium" | "hard";
+
+export interface CtfChallenge {
+  id: string;
+  slug: string;
+  title: string;
+  kind: ChallengeKind;
+  category: ChallengeCategory;
+  difficulty: ChallengeDifficulty;
+  points: number;
+  description: string;
+  hint: string | null;
+  attachment_url: string | null;
+  sort_order: number;
+  is_published: boolean;
+}
+
+export interface ScoreboardRow {
+  rank: number;
+  display_name: string;
+  avatar_url: string | null;
+  points: number;
+  solves: number;
+  hunt_found: number;
+  is_me: boolean;
 }

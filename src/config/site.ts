@@ -67,8 +67,9 @@ export const mainNav: NavItem[] = [
   { label: "Team", href: "/#team", section: "team" },
   { label: "Projects", href: "/#projects", section: "projects" },
   { label: "Events", href: "/events" },
+  { label: "Register", href: "/register" },
+  { label: "Play", href: "/play" },
   { label: "Quizzes", href: "/quizzes" },
   { label: "Learn", href: "/learn" },
-  { label: "Hall of Fame", href: "/#hall-of-fame", section: "hall-of-fame" },
   { label: "Gallery", href: "/gallery" },
 ];

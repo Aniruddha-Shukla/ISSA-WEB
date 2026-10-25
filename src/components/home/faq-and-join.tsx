@@ -9,7 +9,7 @@ export function FaqSection() {
       <Container className="max-w-4xl">
         <SectionHeading
           id="faq-title"
-          kicker="08 · Questions, answered"
+          kicker="09 · Questions, answered"
           title="FAQ"
           description="Can't find what you're looking for? Ask the ISSA assistant in the corner — it knows our rules, events and schedules."
         />
@@ -71,7 +71,7 @@ export function JoinCta() {
               </div>
               <ul className="space-y-3">
                 {membership.benefits.map((benefit) => (
-                  <li key={benefit} className="flex items-start gap-3 rounded-2xl glass px-4 py-3 text-sm text-ink/90">
+                  <li key={benefit} className="flex items-start gap-3 rounded-2xl px-4 py-3 text-sm text-ink/90 glass">
                     <CircleCheck className="mt-0.5 size-4 shrink-0 text-primary" aria-hidden />
                     {benefit}
                   </li>

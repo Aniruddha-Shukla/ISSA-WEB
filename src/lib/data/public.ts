@@ -4,7 +4,16 @@ import { cache } from "react";
 import type { SupabaseClient } from "@supabase/supabase-js";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { getSupabasePublicClient } from "@/lib/supabase/server";
-import type { Achievement, ClubEvent, GalleryItem, LearningResource, Project, Quiz, TeamMember } from "@/lib/types";
+import type {
+  ClubEvent,
+  CtfChallenge,
+  GalleryItem,
+  LearningResource,
+  Project,
+  Quiz,
+  RegistrationLink,
+  TeamMember,
+} from "@/lib/types";
 import { hashString } from "@/lib/utils";
 import * as demo from "./demo";
 
@@ -64,16 +73,6 @@ export const getProjects = cache(() =>
   ),
 );
 
-export const getAchievements = cache(() =>
-  load<Achievement[]>(
-    "achievements",
-    (sb) =>
-      sb.from("achievements").select("*").eq("is_published", true).order("achieved_on", { ascending: false, nullsFirst: false }),
-    () => demo.demoAchievements().sort((a, b) => (b.achieved_on ?? "").localeCompare(a.achieved_on ?? "")),
-    [],
-  ),
-);
-
 export const getGallery = cache(() =>
   load<GalleryItem[]>(
     "gallery",
@@ -85,6 +84,40 @@ export const getGallery = cache(() =>
         .order("sort_order")
         .order("taken_on", { ascending: false, nullsFirst: false }),
     demo.demoGallery,
+    [],
+  ),
+);
+
+/** Open registration links (closed ones drop off once `closes_at` passes; ISR refreshes every minute). */
+export const getRegistrationLinks = cache(async () => {
+  const links = await load<RegistrationLink[]>(
+    "registration links",
+    (sb) =>
+      sb
+        .from("registration_links")
+        .select("*, event:events(title, slug, starts_at)")
+        .eq("is_published", true)
+        .order("sort_order")
+        .order("created_at", { ascending: false }),
+    () => [],
+    [],
+  );
+  const now = Date.now();
+  return links.filter((l) => !l.closes_at || new Date(l.closes_at).getTime() > now);
+});
+
+export const getChallenges = cache(() =>
+  load<CtfChallenge[]>(
+    "challenges",
+    (sb) =>
+      sb
+        .from("ctf_challenges")
+        .select(
+          "id, slug, title, kind, category, difficulty, points, description, hint, attachment_url, sort_order, is_published",
+        )
+        .eq("is_published", true)
+        .order("sort_order"),
+    demo.demoChallenges,
     [],
   ),
 );
@@ -149,7 +182,7 @@ export const getPublicStats = cache(() =>
       members: 240,
       events: 3,
       projects: demo.demoProjects().length,
-      achievements: demo.demoAchievements().length,
+      achievements: 0,
       quiz_players: 180,
     }),
     { members: 0, events: 0, projects: 0, achievements: 0, quiz_players: 0 },

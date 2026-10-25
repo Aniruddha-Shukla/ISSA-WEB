@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import { teamDomains } from "@/config/site";
-import type { Achievement, GalleryItem, LearningResource, Project, TeamMember, TeamTier } from "@/lib/types";
-import { formatDate } from "@/lib/utils";
+import type { CtfChallenge, GalleryItem, LearningResource, Project, RegistrationLink, TeamMember, TeamTier } from "@/lib/types";
+import { getSupabaseBrowserClient } from "@/lib/supabase/client";
+import { errorMessage, formatDateTime } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs } from "@/components/ui/tabs";
@@ -126,56 +127,143 @@ const projectConfig: ResourceConfig<Project> = {
   ],
 };
 
-const achievementConfig: ResourceConfig<Achievement> = {
-  table: "achievements",
-  singular: "Achievement",
-  order: [{ column: "achieved_on", ascending: false }],
-  search: (a) => `${a.title} ${a.recipients} ${a.category}`,
+const registrationConfig: ResourceConfig<RegistrationLink> = {
+  table: "registration_links",
+  singular: "Registration",
+  order: [{ column: "sort_order" }, { column: "created_at", ascending: false }],
+  search: (r) => `${r.title} ${r.description ?? ""}`,
   publishField: "is_published",
-  defaults: { category: "hackathon", is_published: true },
+  defaults: { is_published: true, sort_order: 10 },
   fields: [
-    { name: "title", label: "Title", type: "text", required: true, wide: true },
+    { name: "title", label: "Title", type: "text", required: true, placeholder: "Hack Night: Web Exploitation 101" },
+    { name: "description", label: "Short description", type: "textarea", wide: true },
     {
-      name: "recipients",
-      label: "Recipients",
-      type: "text",
+      name: "form_url",
+      label: "Registration form link",
+      type: "url",
       required: true,
       wide: true,
-      placeholder: "Team Null Pointers · A, B, C",
+      placeholder: "https://forms.gle/…",
+      hint: "Paste the Google Form's share link. A QR code for it is generated automatically.",
+    },
+    {
+      name: "qr_image_url",
+      label: "Custom QR / poster image",
+      type: "image",
+      hint: "Optional. Leave empty to use the generated QR code.",
+    },
+    { name: "closes_at", label: "Closes at", type: "datetime", hint: "Optional. It disappears from the site after this time." },
+    { name: "sort_order", label: "Display order", type: "number", emptyValue: 0, hint: "Lower numbers appear first." },
+    { name: "is_published", label: "Show on website", type: "boolean" },
+  ],
+  columns: [
+    {
+      header: "Registration",
+      cell: (r) => (
+        <div>
+          <p className="font-medium text-ink">{r.title}</p>
+          <p className="line-clamp-1 max-w-md font-mono text-xs text-faint">{r.form_url}</p>
+        </div>
+      ),
+    },
+    {
+      header: "Closes",
+      cell: (r) => <span className="text-muted">{r.closes_at ? formatDateTime(r.closes_at) : "—"}</span>,
+    },
+    { header: "Order", cell: (r) => <span className="font-mono text-muted">{r.sort_order}</span> },
+  ],
+};
+
+const challengeConfig: ResourceConfig<CtfChallenge> = {
+  table: "ctf_challenges",
+  singular: "Challenge",
+  order: [{ column: "kind" }, { column: "sort_order" }],
+  search: (c) => `${c.title} ${c.slug} ${c.category}`,
+  publishField: "is_published",
+  defaults: { kind: "arena", category: "misc", difficulty: "easy", points: 100, is_published: true, sort_order: 10 },
+  fields: [
+    { name: "title", label: "Title", type: "text", required: true },
+    { name: "slug", label: "Slug", type: "slug", from: "title", hint: "Leave empty to generate it from the title." },
+    {
+      name: "kind",
+      label: "Where it lives",
+      type: "select",
+      required: true,
+      options: [
+        { value: "arena", label: "CTF arena" },
+        { value: "hunt", label: "Website flag hunt" },
+      ],
     },
     {
       name: "category",
       label: "Category",
       type: "select",
       required: true,
-      options: ["hackathon", "ctf", "certification", "award", "publication", "other"].map((v) => ({
-        value: v,
-        label: v === "ctf" ? "CTF" : v[0].toUpperCase() + v.slice(1),
-      })),
+      options: [
+        { value: "web", label: "Web" },
+        { value: "crypto", label: "Crypto" },
+        { value: "forensics", label: "Forensics" },
+        { value: "osint", label: "OSINT" },
+        { value: "misc", label: "Misc" },
+      ],
     },
-    { name: "position", label: "Position / result", type: "text", placeholder: "Winner, 1st Runner-up, Top 50…" },
-    { name: "achieved_on", label: "Date", type: "date" },
-    { name: "link_url", label: "Link", type: "url" },
-    { name: "description", label: "Description", type: "textarea" },
-    { name: "image_url", label: "Image", type: "image" },
-    { name: "is_featured", label: "Featured (large card)", type: "boolean" },
+    {
+      name: "difficulty",
+      label: "Difficulty",
+      type: "select",
+      required: true,
+      options: [
+        { value: "easy", label: "Easy" },
+        { value: "medium", label: "Medium" },
+        { value: "hard", label: "Hard" },
+      ],
+    },
+    { name: "points", label: "Points", type: "number", required: true, emptyValue: 100 },
+    {
+      name: "description",
+      label: "Challenge text",
+      type: "textarea",
+      wide: true,
+      hint: "Markdown: **bold**, `code`, ``` code blocks ```, [links](https://…).",
+    },
+    { name: "hint", label: "Hint", type: "textarea", wide: true, hint: "Optional. Players reveal it with a click." },
+    { name: "attachment_url", label: "Attachment link", type: "url", hint: "Optional file players download (image, zip…)." },
+    {
+      name: "flag",
+      label: "Flag",
+      type: "text",
+      virtual: true,
+      placeholder: "ISSA{…}",
+      hint: "Saved only as a one-way hash, so it can't be shown again. Leave empty to keep the current flag.",
+    },
+    { name: "sort_order", label: "Display order", type: "number", emptyValue: 0 },
     { name: "is_published", label: "Show on website", type: "boolean" },
   ],
+  afterSave: async (id, virtual, created) => {
+    if (!virtual.flag) return created ? "No flag set yet. Players can't solve it until you add one." : null;
+    const { error } = await getSupabaseBrowserClient().rpc("set_ctf_flag", { p_challenge_id: id, p_flag: virtual.flag });
+    return error ? `The flag wasn't saved: ${errorMessage(error)}` : null;
+  },
   columns: [
     {
-      header: "Achievement",
-      cell: (a) => (
+      header: "Challenge",
+      cell: (c) => (
         <div>
-          <p className="font-medium text-ink">{a.title}</p>
-          <p className="text-xs text-faint">{a.recipients}</p>
+          <p className="font-medium text-ink">{c.title}</p>
+          <p className="font-mono text-xs text-faint">{c.slug}</p>
         </div>
       ),
     },
-    { header: "Category", cell: (a) => <Badge tone="warning">{a.category}</Badge> },
     {
-      header: "Date",
-      cell: (a) => <span className="whitespace-nowrap text-muted">{a.achieved_on ? formatDate(a.achieved_on) : "—"}</span>,
+      header: "Type",
+      cell: (c) => (
+        <div className="flex flex-wrap gap-1.5">
+          <Badge tone={c.kind === "hunt" ? "warning" : "primary"}>{c.kind === "hunt" ? "flag hunt" : "arena"}</Badge>
+          <Badge tone="neutral">{c.category}</Badge>
+        </div>
+      ),
     },
+    { header: "Points", cell: (c) => <span className="font-mono text-muted">{c.points}</span> },
   ],
 };
 
@@ -292,7 +380,7 @@ const learningConfig: ResourceConfig<LearningResource> = {
   ],
 };
 
-type Tab = "team" | "projects" | "achievements" | "gallery" | "learning";
+type Tab = "team" | "projects" | "registrations" | "challenges" | "gallery" | "learning";
 
 export function ContentAdmin() {
   const [tab, setTab] = useState<Tab>("team");
@@ -305,9 +393,10 @@ export function ContentAdmin() {
         onChange={setTab}
         className="mb-6"
         tabs={[
-          { id: "team", label: "Office bearers" },
+          { id: "team", label: "Team" },
           { id: "projects", label: "Projects" },
-          { id: "achievements", label: "Hall of Fame" },
+          { id: "registrations", label: "Registrations" },
+          { id: "challenges", label: "Play challenges" },
           { id: "gallery", label: "Gallery" },
           { id: "learning", label: "Learning hub" },
         ]}
@@ -315,7 +404,8 @@ export function ContentAdmin() {
       <div role="tabpanel" id={`content-panel-${tab}`} aria-labelledby={`content-tab-${tab}`}>
         {tab === "team" ? <ResourceManager config={teamConfig} /> : null}
         {tab === "projects" ? <ResourceManager config={projectConfig} /> : null}
-        {tab === "achievements" ? <ResourceManager config={achievementConfig} /> : null}
+        {tab === "registrations" ? <ResourceManager config={registrationConfig} /> : null}
+        {tab === "challenges" ? <ResourceManager config={challengeConfig} /> : null}
         {tab === "gallery" ? <ResourceManager config={galleryConfig} /> : null}
         {tab === "learning" ? <ResourceManager config={learningConfig} /> : null}
       </div>

@@ -2,7 +2,7 @@ import "server-only";
 
 import content from "@/content/demo-content.json";
 import { zonedTimeToUtc } from "@/lib/utils";
-import type { Achievement, ClubEvent, GalleryItem, LearningResource, Project, Quiz, TeamMember, TeamTier } from "@/lib/types";
+import type { ClubEvent, CtfChallenge, GalleryItem, LearningResource, Project, Quiz, TeamMember, TeamTier } from "@/lib/types";
 
 /**
  * Sample content for demo mode (no Supabase configured). The same JSON seeds
@@ -42,22 +42,6 @@ export function demoProjects(): Project[] {
     ...p,
     status: p.status as Project["status"],
     cover_url: null,
-    is_published: true,
-  }));
-}
-
-export function demoAchievements(): Achievement[] {
-  return content.achievements.map((a) => ({
-    id: a.id,
-    title: a.title,
-    recipients: a.recipients,
-    category: a.category as Achievement["category"],
-    position: a.position ?? null,
-    description: a.description ?? null,
-    achieved_on: daysAgoDate(a.achieved_days_ago),
-    link_url: null,
-    image_url: null,
-    is_featured: a.is_featured,
     is_published: true,
   }));
 }
@@ -138,5 +122,23 @@ export function demoQuizzes(): (Quiz & { question_count: number })[] {
     created_at: new Date(now).toISOString(),
     updated_at: new Date(now).toISOString(),
     question_count: q.questions.length,
+  }));
+}
+
+/** Starter challenges, without their flag hashes. */
+export function demoChallenges(): CtfChallenge[] {
+  return content.challenges.map((c) => ({
+    id: c.id,
+    slug: c.slug,
+    title: c.title,
+    kind: c.kind as CtfChallenge["kind"],
+    category: c.category as CtfChallenge["category"],
+    difficulty: c.difficulty as CtfChallenge["difficulty"],
+    points: c.points,
+    description: c.description,
+    hint: c.hint ?? null,
+    attachment_url: c.attachment_url ?? null,
+    sort_order: c.sort_order,
+    is_published: true,
   }));
 }

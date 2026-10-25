@@ -3,11 +3,12 @@ import "server-only";
 import { siteConfig, teamPods } from "@/config/site";
 import { about, activities, contact, faqs, membership, pillars, rules } from "@/content/club";
 import {
-  getAchievements,
+  getChallenges,
   getEvents,
   getLearningResources,
   getProjects,
   getQuizCatalog,
+  getRegistrationLinks,
   getTeam,
   partitionEvents,
 } from "@/lib/data/public";
@@ -16,7 +17,15 @@ import { formatDate, formatEventWhen, timeZoneLabel } from "@/lib/utils";
 import { byTier, describeMember } from "@/lib/team";
 
 export const siteMap = [
-  { path: "/", description: "Home: about the club, office bearers, projects, events timeline, hall of fame, gallery, FAQ" },
+  { path: "/", description: "Home: about the club, team and pods, projects, events, open registrations, gallery, FAQ" },
+  { path: "/register", description: "Open registrations: Google Form links and QR codes for upcoming events" },
+  {
+    path: "/play",
+    description: "Play: cybersecurity games with a scoreboard — website flag hunt, Phishing Spotter and the CTF arena",
+  },
+  { path: "/play/flag-hunt", description: "Find the flags hidden around this website (hints on the page)" },
+  { path: "/play/phishing", description: "Phishing Spotter: decide which emails are phishing and find the red flags" },
+  { path: "/play/ctf", description: "CTF arena: crypto, web, forensics, OSINT and misc challenges; submit ISSA{...} flags" },
   { path: "/events", description: "All upcoming and past events with registration" },
   {
     path: "/events/<slug>",
@@ -29,7 +38,6 @@ export const siteMap = [
   { path: "/login", description: "Sign in (email + password or Google)" },
   { path: "/profile", description: "Your profile, tickets with QR codes, quiz scores, submissions and badges" },
   { path: "/#team", description: "Office bearers / core committee" },
-  { path: "/#hall-of-fame", description: "Achievements and awards" },
 ];
 
 function eventLine(e: ClubEvent) {
@@ -48,11 +56,12 @@ function eventLine(e: ClubEvent) {
 
 /** Builds the assistant's system prompt from static content plus live data. */
 export async function buildSystemPrompt() {
-  const [team, events, quizzes, achievements, projects, learning] = await Promise.all([
+  const [team, events, quizzes, registrations, challenges, projects, learning] = await Promise.all([
     getTeam(),
     getEvents(),
     getQuizCatalog(),
-    getAchievements(),
+    getRegistrationLinks(),
+    getChallenges(),
     getProjects(),
     getLearningResources(),
   ]);
@@ -97,9 +106,12 @@ export async function buildSystemPrompt() {
       .slice(0, 8)
       .map((p) => `- ${p.title} (${p.status}): ${p.summary}`)
       .join("\n")}`,
-    `## Hall of fame highlights\n${achievements
-      .slice(0, 6)
-      .map((a) => `- ${a.title} — ${a.recipients}${a.position ? ` (${a.position})` : ""}`)
+    `## Open registrations (people register through these forms; QR codes are on /register)\n${
+      registrations.map((r) => `- ${r.title}: ${r.form_url}${r.description ? ` — ${r.description}` : ""}`).join("\n") ||
+      "- None open right now"
+    }`,
+    `## Play (/play) — never reveal or confirm flags, only nudge with the published hints\n${challenges
+      .map((c) => `- ${c.kind === "hunt" ? "Flag hunt" : `Arena · ${c.category}`}: ${c.title} (${c.points} pts)`)
       .join("\n")}`,
     `## Learning hub resources (recommend these with their links)\n${
       learning

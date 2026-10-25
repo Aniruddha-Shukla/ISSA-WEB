@@ -101,6 +101,54 @@ insert into public.learning_resources (id, title, description, url, track, kind,
   ('a1000000-0000-4000-8000-000000000012', 'CyberChef', 'The "cyber Swiss army knife" for encoding, decoding, hashing and data analysis.', 'https://gchq.github.io/CyberChef/', 'Tools', 'tool', 'beginner', true, 'GCHQ', array['crypto', 'forensics']::text[], 12, false)
 on conflict (id) do nothing;
 
+insert into public.ctf_challenges (id, slug, title, kind, category, difficulty, points, description, hint, attachment_url, sort_order) values
+  ('c0000000-0000-4000-8000-000000000001', 'hunt-source', 'Read Between the Tags', 'hunt', 'web', 'easy', 50, 'Every web page carries notes its visitors never see. One of ours is hiding in plain sight on the **home page**.', 'Open the home page, press Ctrl+U (Cmd+Option+U on a Mac) to view the page source, and search for ISSA{.', null, 1),
+  ('c0000000-0000-4000-8000-000000000002', 'hunt-console', 'Developer Notes', 'hunt', 'web', 'easy', 50, 'Developers leave messages for each other in a place most visitors never open. Ours is encoded.', 'Press F12 and open the Console tab on any page. The message is Base64: CyberChef''s "From Base64" decodes it.', null, 2),
+  ('c0000000-0000-4000-8000-000000000003', 'hunt-robots', 'Robots Keep Secrets', 'hunt', 'web', 'easy', 50, 'Websites tell search-engine robots which pages *not* to visit. Curious humans can read that list too.', 'Read /robots.txt, then visit the place it hides. What you find there is ROT13-encoded.', null, 3),
+  ('c0000000-0000-4000-8000-000000000004', 'hunt-headers', 'Header Hunter', 'hunt', 'web', 'medium', 50, 'Not everything a server says shows up on the page. Open any page under **/play** and listen closely.', 'F12 → Network tab → reload → click the first request → look at the Response Headers.', null, 4),
+  ('c0000000-0000-4000-8000-000000000005', 'hunt-security-txt', 'Report It Right', 'hunt', 'web', 'medium', 50, 'Ethical hackers need to know where to report a bug they find. There''s an internet standard for exactly that, and we follow it.', 'Security teams publish a small text file at /.well-known/security.txt', null, 5),
+  ('c0000000-0000-4000-8000-000000000006', 'caesars-salad', 'Caesar''s Salad', 'arena', 'crypto', 'easy', 100, 'Julius Caesar''s favourite trick is still used by people who think it counts as encryption.
+
+```
+VFFN{e0g13_1f_a0g_3apelcg10a}
+```', 'Every letter is shifted 13 places along the alphabet; numbers and symbols stay the same.', null, 6),
+  ('c0000000-0000-4000-8000-000000000007', 'layer-cake', 'Layer Cake', 'arena', 'crypto', 'easy', 100, 'We intercepted this string. Peel it one layer at a time.
+
+```
+NDk1MzUzNDE3YjYyMzQ3MzMzNWYzNjM0NWYzMTczNWY2ZTMwNzQ1ZjczMzM2MzcyMzM3NDdk
+```', 'Two layers: Base64 first, then hex. CyberChef''s "Magic" operation can work out the recipe for you.', null, 7),
+  ('c0000000-0000-4000-8000-000000000008', 'picture-perfect', 'Picture Perfect', 'arena', 'forensics', 'medium', 200, 'This photo from our last Hack Night says more than it shows.
+
+[Download the image](/ctf/picture-perfect.jpg)', 'Photos carry hidden metadata called EXIF. Try exiftool, or drop the file into an online EXIF viewer.', '/ctf/picture-perfect.jpg', 8),
+  ('c0000000-0000-4000-8000-000000000009', 'know-your-club', 'Know Your Club', 'arena', 'osint', 'easy', 100, 'OSINT starts close to home. Who keeps track of ISSA''s money?
+
+Submit their first name in lowercase, as `ISSA{firstname}`.', 'Everything you need is somewhere on this website.', null, 9),
+  ('c0000000-0000-4000-8000-000000000010', 'hash-brown', 'Hash Brown', 'arena', 'misc', 'medium', 150, 'A user''s password leaked as this MD5 hash:
+
+```
+0571749e2ac330a7455809c6b0e7af90
+```
+
+Submit the password as `ISSA{password}`.', 'MD5 is fast and unsalted, so common passwords are already sitting in public lookup tables.', null, 10),
+  ('c0000000-0000-4000-8000-000000000011', 'inspect-element', 'Inspect Element', 'arena', 'web', 'medium', 200, 'Our intern built a "super-secure" admin login. Can you get in?
+
+[Open the login page](/play/lab/login)', 'The password check runs in your browser, and whatever your browser runs, you can read (F12 → Sources).', null, 11)
+on conflict (id) do nothing;
+
+insert into public.ctf_flags (challenge_id, flag_hash) values
+  ('c0000000-0000-4000-8000-000000000001', '6702f2aaf7c5d193219c004314649b03c915217ff7dba022f08f3d0b11ea1e41'),
+  ('c0000000-0000-4000-8000-000000000002', 'b3cead705a2aea3736bc62ddaad101836e7a1be9f6df6eca4d82498f14ce86c5'),
+  ('c0000000-0000-4000-8000-000000000003', 'bf03a7118a9277671826d7eff92e5e80211caf6de859c246dc25253547770b77'),
+  ('c0000000-0000-4000-8000-000000000004', '412798ba74be1fcd171e821b667f926b92d78e1a155f8df5833389fd2270380b'),
+  ('c0000000-0000-4000-8000-000000000005', 'b6cc65224fd90199407ba6c2b795c860ac50662767946a9f212705f0cfe15a4f'),
+  ('c0000000-0000-4000-8000-000000000006', '2e19f138a931ff97421cb92e7b991fb5ed186114ab3ba6e723c9a841e1d03ce4'),
+  ('c0000000-0000-4000-8000-000000000007', 'ed73ca72772ae38759ffb3effdfe7fe46388ac537b5c1b6a60e2e53c34ef6589'),
+  ('c0000000-0000-4000-8000-000000000008', '8c05594db38f947e47f19f0d58558febd153b23e2285cc4400014ab0a7448edb'),
+  ('c0000000-0000-4000-8000-000000000009', '8f4b334b855208eeb717ce4939e9019557297cae4d6c8a7af644996d24f7d3b2'),
+  ('c0000000-0000-4000-8000-000000000010', 'a7d04e38c0e29ae2453486399e19729a5f5040932c4ece0c77a6b43df3451c61'),
+  ('c0000000-0000-4000-8000-000000000011', 'ec5a22938a89b119bbe27d0cc4c2030b1deb4e0e085435aba5f375917e542992')
+on conflict (challenge_id) do nothing;
+
 insert into public.quiz_questions (id, quiz_id, position, prompt, options, time_limit, points, explanation) values
   ('00010001-0000-4000-8000-000000000000', 'f0000000-0000-4000-8000-000000000001', 0, 'Which TCP port does HTTPS use by default?', array['80', '443', '8080', '22']::text[], 20, 1000, 'HTTPS is HTTP over TLS, served on TCP port 443 by default.'),
   ('00010002-0000-4000-8000-000000000000', 'f0000000-0000-4000-8000-000000000001', 1, 'Which attack tricks a logged-in user''s browser into sending an unwanted request to a trusted site?', array['XSS', 'CSRF', 'SSRF', 'Clickjacking']::text[], 20, 1000, 'Cross-Site Request Forgery rides on the victim''s existing session. Anti-CSRF tokens and SameSite cookies defend against it.'),
