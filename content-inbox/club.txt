@@ -1,0 +1,14 @@
+# Fill in what you have; leave a line blank if it doesn't apply.
+college name:
+chapter name (e.g. Student Chapter):
+club email:
+where to find you (room / block):
+founded (year):
+tenure of the current team (e.g. 2025-26):
+
+instagram:
+linkedin:
+github:
+x / twitter:
+youtube:
+discord / whatsapp community:

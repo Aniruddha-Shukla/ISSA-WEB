@@ -15,7 +15,8 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "test:smoke": "node scripts/smoke-test.mjs",
-    "test:load": "node scripts/load-test.mjs"
+    "test:load": "node scripts/load-test.mjs",
+    "content:import": "node scripts/import-content.mjs"
   },
   "dependencies": {
     "@supabase/ssr": "^0.12.7",

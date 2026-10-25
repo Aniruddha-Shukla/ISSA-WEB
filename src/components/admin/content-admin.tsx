@@ -1,23 +1,48 @@
 "use client";
 
 import { useState } from "react";
-import type { Achievement, GalleryItem, LearningResource, Project, TeamMember } from "@/lib/types";
+import { teamDomains } from "@/config/site";
+import type { Achievement, GalleryItem, LearningResource, Project, TeamMember, TeamTier } from "@/lib/types";
 import { formatDate } from "@/lib/utils";
 import { Avatar } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Tabs } from "@/components/ui/tabs";
 import { ResourceManager, type ResourceConfig } from "./resource-manager";
 
+const tierLabel: Record<TeamTier, string> = { office_bearer: "Office bearer", lead: "Lead", core: "Core member" };
+
 const teamConfig: ResourceConfig<TeamMember> = {
   table: "team_members",
   singular: "Team member",
-  order: [{ column: "sort_order" }, { column: "name" }],
-  search: (m) => `${m.name} ${m.designation}`,
+  // "office_bearer" > "lead" > "core", so descending tier order lists office bearers first.
+  order: [{ column: "tier", ascending: false }, { column: "domain" }, { column: "sort_order" }, { column: "name" }],
+  search: (m) => `${m.name} ${m.designation} ${m.domain ?? ""}`,
   publishField: "is_published",
-  defaults: { is_published: true, sort_order: 10 },
+  defaults: { is_published: true, sort_order: 10, tier: "core" },
   fields: [
     { name: "name", label: "Name", type: "text", required: true },
-    { name: "designation", label: "Designation", type: "text", required: true, placeholder: "President" },
+    {
+      name: "tier",
+      label: "Level",
+      type: "select",
+      required: true,
+      options: (Object.keys(tierLabel) as TeamTier[]).map((value) => ({ value, label: tierLabel[value] })),
+      hint: "Office bearers and leads share the top group (office bearers first); core members are grouped by domain.",
+    },
+    {
+      name: "domain",
+      label: "Domain",
+      type: "select",
+      options: teamDomains.map((d) => ({ value: d, label: d })),
+      hint: "Leave empty for office bearers.",
+    },
+    {
+      name: "designation",
+      label: "Designation",
+      type: "text",
+      required: true,
+      placeholder: "President · Technical Lead · Core Member",
+    },
     { name: "photo_url", label: "Photo", type: "image", hint: "Square photos look best. Initials are shown if empty." },
     { name: "bio", label: "Short bio", type: "textarea" },
     { name: "linkedin_url", label: "LinkedIn URL", type: "url" },
@@ -40,6 +65,15 @@ const teamConfig: ResourceConfig<TeamMember> = {
             <p className="text-xs text-faint">{m.designation}</p>
           </div>
         </div>
+      ),
+    },
+    {
+      header: "Level",
+      cell: (m) => (
+        <span className="text-muted">
+          {tierLabel[m.tier] ?? m.tier}
+          {m.domain ? <span className="text-faint"> · {m.domain}</span> : null}
+        </span>
       ),
     },
     { header: "Tenure", cell: (m) => <span className="text-muted">{m.tenure ?? "—"}</span> },

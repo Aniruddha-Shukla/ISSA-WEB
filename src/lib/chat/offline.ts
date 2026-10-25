@@ -4,6 +4,7 @@ import { contact, faqs, membership, rules } from "@/content/club";
 import type { QuizSummary } from "@/lib/data/public";
 import type { ClubEvent, LearningResource, TeamMember } from "@/lib/types";
 import { formatEventWhen } from "@/lib/utils";
+import { byTier, describeMember } from "@/lib/team";
 
 /**
  * Deterministic fallback used when no Gemini key is configured or the API is
@@ -164,11 +165,15 @@ export function offlineAnswer(
   }
 
   if (has(q, "team", "office bearer", "president", "committee", "core", "lead", "head", "contact person")) {
-    if (!ctx.team.length) return `The office bearers haven't been published yet. You can email ${contact.email}.`;
+    if (!ctx.team.length) return `The team hasn't been published yet. You can email ${contact.email}.`;
+    const leaders = [...ctx.team].sort(byTier).filter((m) => m.tier !== "core");
     return [
-      "**Office bearers**",
-      ...ctx.team.map((m) => `- **${m.name}** — ${m.designation}`),
-      "\nSee them on the [Team](/#team) section.",
+      "**Office bearers & leads**",
+      ...(leaders.length ? leaders : ctx.team).map((m) => {
+        const [name, rest] = describeMember(m).split(" — ");
+        return `- **${name}** — ${rest}`;
+      }),
+      "\nMeet everyone, including the core team of each domain, in the [Team](/#team) section.",
     ].join("\n");
   }
 

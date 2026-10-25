@@ -13,6 +13,7 @@ import {
 } from "@/lib/data/public";
 import type { ClubEvent } from "@/lib/types";
 import { formatDate, formatEventWhen, timeZoneLabel } from "@/lib/utils";
+import { byTier, describeMember } from "@/lib/team";
 
 export const siteMap = [
   { path: "/", description: "Home: about the club, office bearers, projects, events timeline, hall of fame, gallery, FAQ" },
@@ -66,7 +67,12 @@ export async function buildSystemPrompt() {
     `## Focus areas\n${pillars.map((p) => `- ${p.title}: ${p.description}`).join("\n")}`,
     `## What we do\n${activities.map((a) => `- ${a}`).join("\n")}`,
     `## Membership\n${membership.howToJoin}\nRoles:\n${membership.roles.map((r) => `- ${r.role}${r.description ? `: ${r.description}` : ""}`).join("\n")}\nBenefits:\n${membership.benefits.map((b) => `- ${b}`).join("\n")}`,
-    `## Office bearers\n${team.map((m) => `- ${m.name} — ${m.designation}${m.bio ? `: ${m.bio}` : ""}`).join("\n") || "- Not published yet"}`,
+    `## Team (office bearers, then domain leads, then core members)\n${
+      [...team]
+        .sort(byTier)
+        .map((m) => `- ${describeMember(m)}${m.bio ? `: ${m.bio}` : ""}`)
+        .join("\n") || "- Not published yet"
+    }`,
     `## Upcoming events (times in ${tz})\n${upcoming.slice(0, 10).map(eventLine).join("\n") || "- No upcoming events announced yet"}`,
     `## Recent past events\n${
       past

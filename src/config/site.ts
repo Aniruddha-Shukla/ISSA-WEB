@@ -28,6 +28,12 @@ export const siteConfig = {
   },
 } as const;
 
+/**
+ * Team domains, in the order they appear on the site. Each has one lead and a few
+ * core members; office bearers sit above them. Add or rename domains here.
+ */
+export const teamDomains = ["Technical", "Event Management", "Marketing", "Creative"] as const;
+
 export type NavItem = { label: string; href: string; section?: string };
 
 /** Links with `section` point at landing-page anchors and drive the scroll-spy. */

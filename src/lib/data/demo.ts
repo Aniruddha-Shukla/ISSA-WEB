@@ -2,7 +2,7 @@ import "server-only";
 
 import content from "@/content/demo-content.json";
 import { zonedTimeToUtc } from "@/lib/utils";
-import type { Achievement, ClubEvent, GalleryItem, LearningResource, Project, Quiz, TeamMember } from "@/lib/types";
+import type { Achievement, ClubEvent, GalleryItem, LearningResource, Project, Quiz, TeamMember, TeamTier } from "@/lib/types";
 
 /**
  * Sample content for demo mode (no Supabase configured). The same JSON seeds
@@ -22,7 +22,9 @@ export function demoTeam(): TeamMember[] {
     id: m.id,
     name: m.name,
     designation: m.designation,
-    photo_url: null,
+    tier: m.tier as TeamTier,
+    domain: m.domain ?? null,
+    photo_url: m.photo_url ?? null,
     bio: m.bio ?? null,
     linkedin_url: m.linkedin_url ?? null,
     github_url: ("github_url" in m && m.github_url) || null,

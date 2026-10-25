@@ -26,10 +26,15 @@ export interface AppSettings {
   updated_at: string;
 }
 
+export type TeamTier = "office_bearer" | "lead" | "core";
+
 export interface TeamMember {
   id: string;
   name: string;
   designation: string;
+  tier: TeamTier;
+  /** e.g. "Technical"; null for office bearers. */
+  domain: string | null;
   photo_url: string | null;
   bio: string | null;
   linkedin_url: string | null;

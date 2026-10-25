@@ -2,15 +2,17 @@
 -- Do not edit by hand. Safe to run more than once.
 -- Timezone used for event times: Asia/Kolkata
 
-insert into public.team_members (id, name, designation, photo_url, bio, linkedin_url, github_url, twitter_url, instagram_url, email, tenure, sort_order) values
-  ('a0000000-0000-4000-8000-000000000001', 'Aarav Mehta', 'President', null, 'Final-year CSE. Breaks web apps for fun, writes the fixes for work. Leads club strategy and partnerships.', 'https://www.linkedin.com/', 'https://github.com/', null, 'https://www.instagram.com/', null, '2026–27', 1),
-  ('a0000000-0000-4000-8000-000000000002', 'Diya Sharma', 'Vice President', null, 'Cloud security enthusiast and AWS community builder. Keeps every event on schedule.', 'https://www.linkedin.com/', 'https://github.com/', 'https://x.com/', null, null, '2026–27', 2),
-  ('a0000000-0000-4000-8000-000000000003', 'Rohan Iyer', 'Technical Lead', null, 'Full-stack developer and maintainer of the club''s open-source projects, including this website.', 'https://www.linkedin.com/', 'https://github.com/', null, null, null, '2026–27', 3),
-  ('a0000000-0000-4000-8000-000000000004', 'Kabir Singh', 'CTF & Research Lead', null, 'Reverse engineer and pwn player. Designs the challenges for ISSA CTF every year.', 'https://www.linkedin.com/', 'https://github.com/', null, null, null, '2026–27', 4),
-  ('a0000000-0000-4000-8000-000000000005', 'Sneha Kulkarni', 'Events & Outreach Head', null, 'Runs workshops, speaker sessions and the campus cyber-awareness drive.', 'https://www.linkedin.com/', null, null, 'https://www.instagram.com/', null, '2026–27', 5),
-  ('a0000000-0000-4000-8000-000000000006', 'Ananya Rao', 'Design & Media Lead', null, 'UI/UX designer behind the ISSA brand. Photographs every event you see in the gallery.', 'https://www.linkedin.com/', null, null, 'https://www.instagram.com/', null, '2026–27', 6),
-  ('a0000000-0000-4000-8000-000000000007', 'Vikram Nair', 'AI Security Lead', null, 'Researches adversarial ML and LLM red-teaming. Mentors the PhishNet project.', 'https://www.linkedin.com/', 'https://github.com/', null, null, null, '2026–27', 7),
-  ('a0000000-0000-4000-8000-000000000008', 'Meera Joshi', 'Treasurer & Operations', null, 'Manages budgets, sponsorships and logistics so the tech team can focus on building.', 'https://www.linkedin.com/', null, null, null, null, '2026–27', 8)
+insert into public.team_members (id, name, designation, tier, domain, photo_url, bio, linkedin_url, github_url, twitter_url, instagram_url, email, tenure, sort_order) values
+  ('b1000000-0000-4000-8000-000000000001', 'Nishan', 'President', 'office_bearer', null, null, null, null, null, null, null, null, null, 1),
+  ('b1000000-0000-4000-8000-000000000002', 'Shwetank', 'Vice President', 'office_bearer', null, null, null, null, null, null, null, null, null, 2),
+  ('b1000000-0000-4000-8000-000000000003', 'Shivansh', 'Secretary of Events', 'office_bearer', null, null, null, null, null, null, null, null, null, 3),
+  ('b1000000-0000-4000-8000-000000000004', 'Haripriya', 'Secretary of Documents', 'office_bearer', null, null, null, null, null, null, null, null, null, 4),
+  ('b1000000-0000-4000-8000-000000000005', 'Yash', 'PR & Networking Head', 'office_bearer', null, null, null, null, null, null, null, null, null, 5),
+  ('b1000000-0000-4000-8000-000000000006', 'Eaktha', 'Treasurer', 'office_bearer', null, null, null, null, null, null, null, null, null, 6),
+  ('b1000000-0000-4000-8000-000000000007', 'Chinmayi', 'Editor-in-Chief', 'office_bearer', null, null, null, null, null, null, null, null, null, 7),
+  ('b1000000-0000-4000-8000-000000000008', 'Dhaval', 'Tech Lead', 'lead', 'Technical', null, null, null, null, null, null, null, null, 8),
+  ('b1000000-0000-4000-8000-000000000009', 'Chaitanya', 'Events Lead', 'lead', 'Event Management', null, null, null, null, null, null, null, null, 9),
+  ('b1000000-0000-4000-8000-000000000010', 'Jayanth', 'Creative Lead', 'lead', 'Creative', null, null, null, null, null, null, null, null, 10)
 on conflict (id) do nothing;
 
 insert into public.projects (id, title, summary, description, tags, status, repo_url, demo_url, cover_url, contributors, is_featured, sort_order) values

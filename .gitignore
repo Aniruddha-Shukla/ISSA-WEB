@@ -44,3 +44,11 @@ next-env.d.ts
 # supabase local
 supabase/.branches
 supabase/.temp
+
+# raw photos/posters dropped for import (only the optimised copies in public/images are committed)
+/content-inbox/**
+!/content-inbox/*/
+!/content-inbox/README.md
+!/content-inbox/team.csv
+!/content-inbox/club.txt
+!/content-inbox/**/.gitkeep
