@@ -10,7 +10,7 @@ export function BootScreen() {
   return (
     <div className="boot-screen" aria-hidden>
       <div className="flex flex-col items-center gap-5">
-        <LogoMark gradientId="boot-logo" className="size-14 drop-shadow-[0_0_20px_rgb(34_211_238/0.6)]" />
+        <LogoMark eager size={56} className="size-14" />
         <p className="text-chrome pl-[0.4em] font-display text-2xl font-black tracking-[0.4em]">{dottedName}</p>
         <div className="h-0.5 w-48 overflow-hidden rounded-full bg-white/10">
           <div className="h-full origin-left animate-boot-bar bg-gradient-to-r from-primary to-accent" />

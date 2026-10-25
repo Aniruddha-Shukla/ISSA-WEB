@@ -71,10 +71,7 @@ export function HeroEmblem({ className }: { className?: string }) {
         <div className="absolute inset-0 overflow-hidden rounded-full">
           <div className="absolute inset-x-0 top-0 h-1/2 bg-gradient-to-b from-transparent to-primary/25 motion-safe:animate-scan" />
         </div>
-        <LogoMark
-          gradientId="emblem-logo"
-          className="absolute inset-[22%] size-auto drop-shadow-[0_0_18px_rgb(34_211_238/0.7)]"
-        />
+        <LogoMark eager size={120} className="absolute inset-[14%] size-[72%] drop-shadow-[0_0_16px_rgb(255_255_255/0.25)]" />
       </div>
 
       {/* orbiting node */}

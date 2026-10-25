@@ -23,7 +23,7 @@ export function AuthShell({ title, subtitle, children }: { title: string; subtit
           aria-hidden
         />
         <div className="relative">
-          <LogoMark className="size-12" />
+          <LogoMark size={48} className="size-12" />
           <p className="mt-8 font-mono text-xs tracking-[0.22em] text-primary uppercase">{siteConfig.fullName}</p>
           <p className="mt-4 font-display text-4xl leading-tight font-bold text-ink">
             {siteConfig.tagline.split(" ").map((w, i) => (

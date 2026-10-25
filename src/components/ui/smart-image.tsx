@@ -37,7 +37,7 @@ export function SmartImage({
   priority?: boolean;
 }) {
   if (canOptimize(src)) {
-    return <Image src={src} alt={alt} fill sizes={sizes} priority={priority} className={cn("object-cover", className)} />;
+    return <Image src={src} alt={alt} fill sizes={sizes} preload={priority} className={cn("object-cover", className)} />;
   }
   return (
     // eslint-disable-next-line @next/next/no-img-element -- arbitrary admin-provided hosts can't be allow-listed

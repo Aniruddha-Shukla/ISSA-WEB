@@ -22,7 +22,9 @@ export function Hero({ stats, nextEvent }: { stats: PublicStats; nextEvent?: Clu
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden">
       <Container className="flex flex-col items-center pt-8 text-center sm:pt-12">
         <p className="font-display text-[0.65rem] font-semibold tracking-[0.3em] text-gold uppercase motion-safe:animate-fade-up sm:text-sm">
-          Cybersecurity &amp; Tech Club · {siteConfig.college}
+          {/* wraps between the two phrases on phones instead of mid-name */}
+          <span className="inline-block">Cybersecurity &amp; Tech Club</span>
+          <span className="hidden sm:inline"> · </span> <span className="inline-block">{siteConfig.college}</span>
         </p>
 
         <HeroEmblem className="mt-8 sm:mt-10" />

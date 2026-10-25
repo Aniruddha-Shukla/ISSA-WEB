@@ -4,6 +4,7 @@ import { useState, type FormEvent } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { Eye, EyeOff, LogIn } from "lucide-react";
+import { siteConfig } from "@/config/site";
 import { isSupabaseConfigured } from "@/lib/supabase/env";
 import { getSupabaseBrowserClient } from "@/lib/supabase/client";
 import { errorMessage } from "@/lib/utils";
@@ -98,7 +99,7 @@ export function LoginForm({ next, initialError }: { next: string; initialError?:
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            placeholder={hostedDomain ? `you@${hostedDomain}` : "you@college.edu"}
+            placeholder={`you@${hostedDomain ?? siteConfig.email.split("@")[1]}`}
           />
         </Field>
         <div>

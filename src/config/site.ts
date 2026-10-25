@@ -7,24 +7,24 @@ export const siteConfig = {
   name: "ISSA Tech Club",
   fullName: "Information Systems Security Association",
   chapter: "Student Chapter",
-  college: "Your College Name",
+  college: "The National Institute of Engineering",
   tagline: "Hack. Defend. Build.",
   description:
     "ISSA is the cybersecurity and technology club on campus: hands-on workshops, CTFs, hackathons, live quizzes and open-source projects built by students.",
   url: process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000",
-  email: "issa@yourcollege.edu",
-  location: "CSE Block, Your College Name",
+  email: "issa_chapter@nie.ac.in",
+  location: "The National Institute of Engineering, Mysuru",
   // All event times are shown in this timezone, for every visitor.
   timezone: process.env.NEXT_PUBLIC_CLUB_TIMEZONE ?? "Asia/Kolkata",
   locale: "en-IN",
   founded: 2019,
+  // Leave a link empty ("") to hide that icon.
   socials: {
-    github: "https://github.com/",
-    linkedin: "https://www.linkedin.com/",
-    instagram: "https://www.instagram.com/",
-    x: "https://x.com/",
-    discord: "https://discord.com/",
-    youtube: "https://www.youtube.com/",
+    instagram: "https://www.instagram.com/issa_nie/",
+    linkedin: "",
+    github: "",
+    x: "",
+    youtube: "",
   },
 } as const;
 

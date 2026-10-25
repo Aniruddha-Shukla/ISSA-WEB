@@ -62,7 +62,7 @@ export async function buildSystemPrompt() {
 
   const sections = [
     `# ${siteConfig.name} (${siteConfig.fullName} — ${siteConfig.chapter}, ${siteConfig.college})`,
-    `Tagline: ${siteConfig.tagline}. Contact: ${contact.email}. Location: ${contact.location}. Founded ${siteConfig.founded}.`,
+    `Tagline: ${siteConfig.tagline}. Contact: ${contact.email}${contact.socials.instagram ? `, Instagram ${contact.socials.instagram}` : ""}. Location: ${contact.location}. Founded ${siteConfig.founded}.`,
     `## About\n${about.mission}\n${about.story}`,
     `## Focus areas\n${pillars.map((p) => `- ${p.title}: ${p.description}`).join("\n")}`,
     `## What we do\n${activities.map((a) => `- ${a}`).join("\n")}`,

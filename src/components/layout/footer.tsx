@@ -1,6 +1,8 @@
+import Image from "next/image";
 import Link from "next/link";
 import { siteConfig } from "@/config/site";
 import { GithubIcon, InstagramIcon, LinkedinIcon, XIcon, YoutubeIcon } from "@/components/ui/brand-icons";
+import issaLogo from "@/assets/brand/issa-logo.png";
 import { dottedName, LogoMark } from "./logo";
 
 const columns = [
@@ -8,7 +10,7 @@ const columns = [
     title: "Explore",
     links: [
       { label: "About", href: "/#about" },
-      { label: "Office bearers", href: "/#team" },
+      { label: "Our team", href: "/#team" },
       { label: "Projects", href: "/#projects" },
       { label: "Hall of Fame", href: "/#hall-of-fame" },
     ],
@@ -26,12 +28,12 @@ const columns = [
 ];
 
 const socials = [
-  { label: "GitHub", href: siteConfig.socials.github, icon: GithubIcon },
-  { label: "LinkedIn", href: siteConfig.socials.linkedin, icon: LinkedinIcon },
   { label: "Instagram", href: siteConfig.socials.instagram, icon: InstagramIcon },
+  { label: "LinkedIn", href: siteConfig.socials.linkedin, icon: LinkedinIcon },
+  { label: "GitHub", href: siteConfig.socials.github, icon: GithubIcon },
   { label: "X", href: siteConfig.socials.x, icon: XIcon },
   { label: "YouTube", href: siteConfig.socials.youtube, icon: YoutubeIcon },
-];
+].filter((s) => s.href);
 
 function ColumnTitle({ children }: { children: string }) {
   return (
@@ -51,12 +53,19 @@ export function Footer() {
       <div className="mx-auto grid max-w-7xl gap-12 px-4 py-16 sm:px-6 md:grid-cols-[1.5fr_1fr_1fr_1.3fr] lg:px-8">
         <div>
           <Link href="/" className="flex items-center gap-3" aria-label={`${siteConfig.shortName} home`}>
-            <LogoMark gradientId="footer-logo" className="size-12" />
+            <LogoMark size={48} className="size-12" />
             <span className="text-chrome font-display text-3xl font-black tracking-[0.18em]">{dottedName}</span>
           </Link>
           <p className="mt-5 max-w-xs text-sm leading-relaxed text-muted">
             {siteConfig.fullName} — {siteConfig.chapter}, {siteConfig.college}.
           </p>
+          {/* the official logo, unaltered, on its own white background */}
+          <Image
+            src={issaLogo}
+            alt={`${siteConfig.shortName} — ${siteConfig.fullName}`}
+            sizes="224px"
+            className="mt-6 h-auto w-56 rounded-lg bg-white p-2"
+          />
           <ul className="mt-6 flex gap-2" aria-label="Social media">
             {socials.map(({ label, href, icon: Icon }) => (
               <li key={label}>
