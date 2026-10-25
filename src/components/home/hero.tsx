@@ -7,8 +7,8 @@ import { formatDateTime } from "@/lib/utils";
 import { ButtonLink } from "@/components/ui/button";
 import { ChamferFrame } from "@/components/ui/chamfer-frame";
 import { Container } from "@/components/ui/section-heading";
-import { dottedName } from "@/components/layout/logo";
-import { HeroEmblem } from "./hero-emblem";
+import { CountUp } from "@/components/fx/count-up";
+import { HeroStage } from "./hero-stage";
 
 export function Hero({ stats, nextEvent }: { stats: PublicStats; nextEvent?: ClubEvent }) {
   const statItems = [
@@ -20,29 +20,8 @@ export function Hero({ stats, nextEvent }: { stats: PublicStats; nextEvent?: Clu
 
   return (
     <section aria-labelledby="hero-title" className="relative isolate overflow-hidden">
-      <Container className="flex flex-col items-center pt-8 text-center sm:pt-12">
-        <p className="font-display text-[0.65rem] font-semibold tracking-[0.3em] text-gold uppercase motion-safe:animate-fade-up sm:text-sm">
-          {/* wraps between the two phrases on phones instead of mid-name */}
-          <span className="inline-block">Cybersecurity &amp; Tech Club</span>
-          <span className="hidden sm:inline"> · </span> <span className="inline-block">{siteConfig.college}</span>
-        </p>
-
-        <HeroEmblem className="mt-8 sm:mt-10" />
-
-        <h1 id="hero-title" className="relative z-10 -mt-6 w-full sm:-mt-8">
-          <span className="sr-only">
-            {siteConfig.shortName} — {siteConfig.fullName}
-          </span>
-          <span
-            aria-hidden
-            className="block text-chrome pl-[0.2em] font-display text-[clamp(3.1rem,15.5vw,13.5rem)] leading-none font-black tracking-[0.2em] drop-shadow-[0_8px_40px_rgb(0_0_0/0.9)] select-none"
-          >
-            {dottedName}
-          </span>
-        </h1>
-        <p className="mt-3 font-display text-[0.62rem] tracking-[0.35em] text-muted uppercase sm:text-xs">
-          {siteConfig.fullName} · {siteConfig.chapter}
-        </p>
+      <Container>
+        <HeroStage />
       </Container>
 
       <Container className="mt-14 sm:mt-20">
@@ -81,7 +60,7 @@ export function Hero({ stats, nextEvent }: { stats: PublicStats; nextEvent?: Clu
                 <ChamferFrame key={item.label} size={18} innerClassName="bg-surface/90 px-5 py-4 sm:px-6 sm:py-5">
                   <dt className="font-display text-[0.6rem] tracking-[0.22em] text-gold uppercase">{item.label}</dt>
                   <dd className="mt-1.5 text-chrome font-display text-3xl font-bold sm:text-4xl">
-                    {item.value.toLocaleString("en-IN")}
+                    <CountUp value={item.value} />
                     {item.value >= 10 ? <span className="text-primary">+</span> : null}
                   </dd>
                 </ChamferFrame>

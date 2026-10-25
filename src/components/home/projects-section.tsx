@@ -5,6 +5,8 @@ import { AnimatePresence, motion } from "framer-motion";
 import { ArrowRight, ChevronDown, FolderGit2 } from "lucide-react";
 import type { Project, ProjectStatus } from "@/lib/types";
 import { cn, isSafeHttpUrl } from "@/lib/utils";
+import { Parallax } from "@/components/fx/parallax";
+import { ScrubIn } from "@/components/fx/scrub-in";
 import { Badge } from "@/components/ui/badge";
 import { GithubIcon } from "@/components/ui/brand-icons";
 import { Button } from "@/components/ui/button";
@@ -32,21 +34,24 @@ function ProjectRow({ project, flip }: { project: Project; flip: boolean }) {
         />
         <div className="bg-gradient-to-br from-primary/80 via-white/10 to-accent/80 p-[1.5px] [--chamfer:34px] chamfer">
           <div className="relative aspect-[16/10] overflow-hidden bg-surface-2 [--chamfer:33.4px] chamfer">
-            {project.cover_url ? (
-              <SmartImage
-                src={project.cover_url}
-                alt=""
-                sizes="(min-width: 768px) 45vw, 100vw"
-                className="transition-transform duration-700 group-hover:scale-105"
-              />
-            ) : (
-              <GenerativeArt seed={project.title} className="transition-transform duration-700 group-hover:scale-105" />
-            )}
+            {/* the picture drifts inside its frame as the row scrolls past */}
+            <Parallax>
+              {project.cover_url ? (
+                <SmartImage
+                  src={project.cover_url}
+                  alt=""
+                  sizes="(min-width: 768px) 45vw, 100vw"
+                  className="transition-transform duration-700 group-hover:scale-105"
+                />
+              ) : (
+                <GenerativeArt seed={project.title} className="transition-transform duration-700 group-hover:scale-105" />
+              )}
+            </Parallax>
           </div>
         </div>
       </div>
 
-      <div className={cn(flip && "md:order-1 md:text-right")}>
+      <ScrubIn from={flip ? "left" : "right"} className={cn(flip && "md:order-1 md:text-right")}>
         <div className={cn("flex flex-wrap gap-2", flip && "md:justify-end")}>
           <Badge tone={project.status === "ongoing" ? "primary" : "accent"} dot pulse={project.status === "ongoing"}>
             {project.status}
@@ -92,7 +97,7 @@ function ProjectRow({ project, flip }: { project: Project; flip: boolean }) {
             ) : null}
           </div>
         ) : null}
-      </div>
+      </ScrubIn>
     </div>
   );
 }
@@ -112,7 +117,7 @@ export function ProjectsSection({ projects }: { projects: Project[] }) {
   const visible = expanded ? filtered : filtered.slice(0, INITIAL_VISIBLE);
 
   return (
-    <section id="projects" aria-labelledby="projects-title" className="py-24 sm:py-28">
+    <section id="projects" aria-labelledby="projects-title" className="overflow-x-clip py-24 sm:py-28">
       <Container>
         <SectionHeading
           id="projects-title"

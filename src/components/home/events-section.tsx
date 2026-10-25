@@ -4,30 +4,9 @@ import { ButtonLink } from "@/components/ui/button";
 import { EmptyState } from "@/components/ui/feedback";
 import { Container, SectionHeading } from "@/components/ui/section-heading";
 import { EventPoster } from "@/components/events/event-poster";
-import { EventsTabs } from "@/components/events/events-tabs";
-import { PosterRail } from "@/components/events/poster-rail";
+import { EventTrack } from "@/components/events/event-track";
 
-function Posters({
-  events,
-  seats,
-  past,
-  label,
-}: {
-  events: ClubEvent[];
-  seats: Record<string, number>;
-  past?: boolean;
-  label: string;
-}) {
-  return (
-    <PosterRail label={label}>
-      {events.map((event) => (
-        <li key={event.id} className="w-[17rem] shrink-0 snap-start sm:w-[19rem]">
-          <EventPoster event={event} registered={seats[event.id]} past={past} />
-        </li>
-      ))}
-    </PosterRail>
-  );
-}
+const posterItem = "w-[17rem] shrink-0 snap-start sm:w-[19rem]";
 
 export function EventsSection({
   upcoming,
@@ -47,31 +26,37 @@ export function EventsSection({
           title="Events"
           description="Register in one click, get a QR ticket instantly, and check in at the venue."
         />
-        <EventsTabs
-          idPrefix="home-events"
-          centered
-          upcomingCount={upcoming.length}
-          pastCount={past.length}
-          upcoming={
-            upcoming.length ? (
-              <Posters events={upcoming} seats={seats} label="Upcoming events" />
-            ) : (
-              <EmptyState
-                icon={<CalendarX2 className="size-5" />}
-                title="No upcoming events yet"
-                description="New events are announced here first. Check back soon!"
-              />
-            )
-          }
-          past={
-            past.length ? (
-              <Posters events={past} seats={seats} past label="Past events" />
-            ) : (
-              <EmptyState title="No past events yet" />
-            )
-          }
-        />
-        <div className="mt-8 flex justify-center">
+        {upcoming.length || past.length ? (
+          // one journey: what's coming up, then what we've done
+          <EventTrack label="Upcoming and past events">
+            {upcoming.map((event) => (
+              <li key={event.id} className={posterItem}>
+                <EventPoster event={event} registered={seats[event.id]} />
+              </li>
+            ))}
+            {past.length ? (
+              <li className="flex w-28 shrink-0 snap-start flex-col items-center justify-center gap-4">
+                <span className="h-24 w-px bg-gradient-to-b from-transparent to-gold/60" />
+                <span className="font-display text-[0.65rem] font-semibold tracking-[0.3em] text-gold uppercase [writing-mode:vertical-rl]">
+                  Past events
+                </span>
+                <span className="h-24 w-px bg-gradient-to-t from-transparent to-gold/60" />
+              </li>
+            ) : null}
+            {past.map((event) => (
+              <li key={event.id} className={posterItem}>
+                <EventPoster event={event} registered={seats[event.id]} past />
+              </li>
+            ))}
+          </EventTrack>
+        ) : (
+          <EmptyState
+            icon={<CalendarX2 className="size-5" />}
+            title="No events yet"
+            description="New events are announced here first. Check back soon!"
+          />
+        )}
+        <div className="mt-10 flex justify-center">
           <ButtonLink href="/events" variant="neon" className="px-6 font-display text-[0.7rem] tracking-[0.18em] uppercase">
             All events <ArrowRight className="size-4" aria-hidden />
           </ButtonLink>

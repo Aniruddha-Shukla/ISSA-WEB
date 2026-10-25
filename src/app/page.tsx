@@ -1,3 +1,4 @@
+import { ScrollMarquee } from "@/components/fx/scroll-marquee";
 import { AboutSection } from "@/components/home/about-section";
 import { EventsSection } from "@/components/home/events-section";
 import { FaqSection, JoinCta } from "@/components/home/faq-and-join";
@@ -38,10 +39,12 @@ export default async function HomePage() {
   return (
     <>
       <Hero stats={stats} nextEvent={upcoming[0]} />
+      <ScrollMarquee words={["Hack", "Defend", "Build", "Learn", "Share"]} />
       <AboutSection />
       <TeamSection team={team} />
       <ProjectsSection projects={projects} />
-      <EventsSection upcoming={upcoming.slice(0, 4)} past={past.slice(0, 4)} seats={seats} />
+      <ScrollMarquee words={["Workshops", "CTFs", "Hackathons", "Quiz nights", "Talks"]} baseVelocity={-2} />
+      <EventsSection upcoming={upcoming.slice(0, 6)} past={past.slice(0, 6)} seats={seats} />
       <LearnSection resources={learning} />
       <HallOfFame achievements={achievements} />
       <GallerySection items={gallery.slice(0, 9)} />

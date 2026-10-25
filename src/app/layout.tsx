@@ -7,6 +7,7 @@ import { Footer } from "@/components/layout/footer";
 import { DemoBanner } from "@/components/layout/demo-banner";
 import { BootScreen } from "@/components/layout/boot-screen";
 import { Starfield } from "@/components/ui/starfield";
+import { ScrollProgress } from "@/components/fx/scroll-progress";
 import { ChatWidget } from "@/components/chat/chat-widget";
 import "./globals.css";
 
@@ -57,6 +58,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
         </a>
         <AppProviders>
           <DemoBanner />
+          <ScrollProgress />
           <Navbar />
           <main id="main" className="flex-1">
             {children}

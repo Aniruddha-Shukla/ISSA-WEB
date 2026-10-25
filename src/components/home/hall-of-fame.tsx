@@ -1,6 +1,7 @@
 import { Award, BadgeCheck, ExternalLink, Flag, Newspaper, Sparkles, Trophy, type LucideIcon } from "lucide-react";
 import type { Achievement, AchievementCategory } from "@/lib/types";
 import { cn, formatDate, isSafeHttpUrl } from "@/lib/utils";
+import { TiltCard } from "@/components/fx/tilt-card";
 import { ChamferFrame } from "@/components/ui/chamfer-frame";
 import { EmptyState } from "@/components/ui/feedback";
 import { Reveal } from "@/components/ui/reveal";
@@ -105,7 +106,9 @@ export function HallOfFame({ achievements }: { achievements: Achievement[] }) {
               <ul className="grid gap-5 lg:grid-cols-3">
                 {featured.map((item, i) => (
                   <Reveal as="li" key={item.id} delay={i * 0.08} className="h-full">
-                    <AchievementCard item={item} featured />
+                    <TiltCard glareClassName="chamfer [--chamfer:26px]">
+                      <AchievementCard item={item} featured />
+                    </TiltCard>
                   </Reveal>
                 ))}
               </ul>
@@ -114,7 +117,9 @@ export function HallOfFame({ achievements }: { achievements: Achievement[] }) {
               <ul className="mt-5 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                 {rest.map((item, i) => (
                   <Reveal as="li" key={item.id} delay={(i % 3) * 0.06} className="h-full">
-                    <AchievementCard item={item} />
+                    <TiltCard max={5} glareClassName="chamfer [--chamfer:20px]">
+                      <AchievementCard item={item} />
+                    </TiltCard>
                   </Reveal>
                 ))}
               </ul>

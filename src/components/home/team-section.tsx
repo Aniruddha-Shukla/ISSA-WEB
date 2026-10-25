@@ -1,6 +1,7 @@
 import { teamPods } from "@/config/site";
 import type { TeamMember } from "@/lib/types";
 import { slugify } from "@/lib/utils";
+import { TiltCard } from "@/components/fx/tilt-card";
 import { EmptyState } from "@/components/ui/feedback";
 import { Reveal } from "@/components/ui/reveal";
 import { Container, SectionHeading } from "@/components/ui/section-heading";
@@ -54,7 +55,9 @@ export function TeamSection({ team }: { team: TeamMember[] }) {
                 <ul className="flex flex-wrap justify-center gap-4 sm:gap-6">
                   {leadership.map((m, i) => (
                     <Reveal as="li" key={m.id} delay={(i % 4) * 0.06} className="w-[calc(50%-0.5rem)] sm:w-[17rem]">
-                      <MemberCard member={m} />
+                      <TiltCard glareClassName="chamfer [--chamfer:26px]">
+                        <MemberCard member={m} />
+                      </TiltCard>
                     </Reveal>
                   ))}
                 </ul>
@@ -67,7 +70,9 @@ export function TeamSection({ team }: { team: TeamMember[] }) {
                 <ul className="grid gap-6 lg:grid-cols-2">
                   {pods.map((pod, i) => (
                     <Reveal as="li" key={pod.id} delay={(i % 2) * 0.06} className="h-full">
-                      <PodPanel pod={pod} />
+                      <TiltCard max={3} glareClassName="chamfer [--chamfer:26px]">
+                        <PodPanel pod={pod} />
+                      </TiltCard>
                     </Reveal>
                   ))}
                 </ul>
